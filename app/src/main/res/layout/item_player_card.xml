@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_card_limited"
+    android:background="@drawable/bg_card_common"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:padding="10dp">
@@ -33,7 +33,7 @@
             android:id="@+id/card_rarity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/limited_accent"
+            android:textColor="@color/common_accent"
             android:textSize="9sp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -91,7 +91,7 @@
             android:id="@+id/card_serial"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/limited_accent"
+            android:textColor="@color/common_accent"
             android:textSize="9sp"
             android:textStyle="bold" />
     </LinearLayout>
