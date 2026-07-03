@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">פנטזי שחמט ישראל</string>
+
+    <string name="tab_home">בית</string>
+    <string name="tab_squad">הרכב</string>
+    <string name="tab_packs">חבילות</string>
+    <string name="tab_collection">אוסף</string>
+
+    <string name="home_club_subtitle">מועדון שחמט הפועל פתח תקווה · עונת 2026</string>
+    <string name="home_gameweek">מחזור %1$d</string>
+    <string name="home_total_points">נקודות פנטזי במחזור הנוכחי</string>
+    <string name="home_my_squad">ההרכב שלי</string>
+    <string name="home_packs_button">חבילות (%1$d)</string>
+    <string name="home_data_live">● נתונים חיים מאתר איגוד השחמט הישראלי — לחץ לרענון</string>
+    <string name="home_data_sample">○ מצב הדגמה: אתר האיגוד אינו זמין כרגע, מוצגים נתוני דוגמה — לחץ לרענון</string>
+    <string name="home_week_leaders">מצטייני המחזור</string>
+
+    <string name="squad_title">ההרכב שלי</string>
+    <string name="squad_total">%1$d נק׳</string>
+    <string name="squad_hint">בחר 5 שחקנים מהקלפים שברשותך. הקפטן מכפיל את הנקודות שלו פי 1.5.</string>
+    <string name="squad_empty_slot">משבצת ריקה</string>
+    <string name="squad_pick_player">בחר קלף</string>
+    <string name="squad_captain_marked">★ קפטן</string>
+    <string name="squad_make_captain">הפוך לקפטן</string>
+    <string name="squad_change">החלף</string>
+    <string name="squad_pick_title">בחר קלף מהאוסף</string>
+    <string name="squad_clear_slot">פנה משבצת</string>
+
+    <string name="packs_title">חבילות קלפים</string>
+    <string name="packs_pack_name">חבילת הפועל פ״ת</string>
+    <string name="packs_pack_contents">3 קלפים אקראיים מסגל המועדון</string>
+    <string name="packs_available">חבילות זמינות: %1$d</string>
+    <string name="packs_open">פתח חבילה</string>
+    <string name="packs_none">אין חבילות כרגע — חבילה חינם בכל מחזור!</string>
+    <string name="packs_weekly_ready">🎁 החבילה השבועית שלך מוכנה!</string>
+    <string name="packs_weekly_claim">אסוף חבילה שבועית</string>
+    <string name="packs_weekly_claimed">החבילה השבועית נאספה. חבילה חדשה בתחילת המחזור הבא.</string>
+    <string name="packs_reveal_title">קלפים חדשים!</string>
+
+    <string name="collection_title">האוסף שלי</string>
+    <string name="collection_count">%1$d קלפים באוסף</string>
+    <string name="collection_empty">עדיין אין קלפים באוסף — פתח חבילה כדי להתחיל!</string>
+
+    <string name="player_not_found">השחקן לא נמצא</string>
+    <string name="player_not_owned">אין לך עדיין קלף של שחקן זה — נסה לפתוח חבילה</string>
+    <string name="player_national_rating">מדד לאומי</string>
+    <string name="player_fide_rating">דירוג FIDE</string>
+    <string name="player_card_rating">דירוג קלף</string>
+    <string name="player_week_games">משחקי השבוע</string>
+    <string name="player_no_games">אין משחקים במחזור הנוכחי</string>
+    <string name="game_vs">נגד %1$s</string>
+    <string name="result_win">ניצחון</string>
+    <string name="result_draw">תיקו</string>
+    <string name="result_loss">הפסד</string>
+
+    <string name="card_national_rating">מדד %1$d</string>
+    <string name="card_week_points">%1$d נק׳</string>
+
+    <string name="rarity_limited">Limited</string>
+    <string name="rarity_rare">Rare</string>
+    <string name="rarity_super_rare">Super Rare</string>
+    <string name="rarity_unique">Unique</string>
+
+    <string name="common_done">אישור</string>
+    <string name="common_back">חזרה</string>
+</resources>

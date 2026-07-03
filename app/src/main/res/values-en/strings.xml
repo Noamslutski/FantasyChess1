@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Fantasy Chess Israel</string>
+
+    <string name="tab_home">Home</string>
+    <string name="tab_squad">Squad</string>
+    <string name="tab_packs">Packs</string>
+    <string name="tab_collection">Collection</string>
+
+    <string name="home_club_subtitle">Hapoel Petah Tikva Chess Club · 2026 season</string>
+    <string name="home_gameweek">Gameweek %1$d</string>
+    <string name="home_total_points">Fantasy points this gameweek</string>
+    <string name="home_my_squad">My squad</string>
+    <string name="home_packs_button">Packs (%1$d)</string>
+    <string name="home_data_live">● Live data from the Israeli Chess Federation — tap to refresh</string>
+    <string name="home_data_sample">○ Demo mode: federation site unavailable, showing sample data — tap to refresh</string>
+    <string name="home_week_leaders">Gameweek leaders</string>
+
+    <string name="squad_title">My squad</string>
+    <string name="squad_total">%1$d pts</string>
+    <string name="squad_hint">Pick 5 players from the cards you own. The captain scores x1.5.</string>
+    <string name="squad_empty_slot">Empty slot</string>
+    <string name="squad_pick_player">Pick a card</string>
+    <string name="squad_captain_marked">★ Captain</string>
+    <string name="squad_make_captain">Make captain</string>
+    <string name="squad_change">Swap</string>
+    <string name="squad_pick_title">Pick a card from your collection</string>
+    <string name="squad_clear_slot">Clear slot</string>
+
+    <string name="packs_title">Card packs</string>
+    <string name="packs_pack_name">Hapoel PT Pack</string>
+    <string name="packs_pack_contents">3 random cards from the club roster</string>
+    <string name="packs_available">Packs available: %1$d</string>
+    <string name="packs_open">Open pack</string>
+    <string name="packs_none">No packs right now — a free pack every gameweek!</string>
+    <string name="packs_weekly_ready">🎁 Your weekly pack is ready!</string>
+    <string name="packs_weekly_claim">Claim weekly pack</string>
+    <string name="packs_weekly_claimed">Weekly pack claimed. A new one arrives next gameweek.</string>
+    <string name="packs_reveal_title">New cards!</string>
+
+    <string name="collection_title">My collection</string>
+    <string name="collection_count">%1$d cards in your collection</string>
+    <string name="collection_empty">No cards yet — open a pack to get started!</string>
+
+    <string name="player_not_found">Player not found</string>
+    <string name="player_not_owned">You don\'t own a card of this player yet — try opening a pack</string>
+    <string name="player_national_rating">National rating</string>
+    <string name="player_fide_rating">FIDE rating</string>
+    <string name="player_card_rating">Card rating</string>
+    <string name="player_week_games">This week\'s games</string>
+    <string name="player_no_games">No games this gameweek</string>
+    <string name="game_vs">vs %1$s</string>
+    <string name="result_win">Win</string>
+    <string name="result_draw">Draw</string>
+    <string name="result_loss">Loss</string>
+
+    <string name="card_national_rating">Rtg %1$d</string>
+    <string name="card_week_points">%1$d pts</string>
+
+    <string name="rarity_limited">Limited</string>
+    <string name="rarity_rare">Rare</string>
+    <string name="rarity_super_rare">Super Rare</string>
+    <string name="rarity_unique">Unique</string>
+
+    <string name="common_done">Done</string>
+    <string name="common_back">Back</string>
+</resources>

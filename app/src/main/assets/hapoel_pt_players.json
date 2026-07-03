@@ -1,0 +1,20 @@
+{
+  "club": "הפועל פתח תקווה",
+  "note": "Sample roster used when chess.org.il is unreachable. Replaced automatically by live federation data when the API responds. Names here are placeholders, not real registered players.",
+  "players": [
+    { "id": 21804, "name": "הילה ברנשטיין", "gender": "GIRL", "nationalRating": 2452, "fideRating": 2410, "title": "IM" },
+    { "id": 18342, "name": "דניאל אברמוביץ", "gender": "BOY", "nationalRating": 2385, "fideRating": 2344, "title": "FM" },
+    { "id": 19277, "name": "יונתן פרידמן", "gender": "BOY", "nationalRating": 2290, "fideRating": 2251, "title": "FM" },
+    { "id": 20155, "name": "מאיה רוזנברג", "gender": "GIRL", "nationalRating": 2210, "fideRating": 2180, "title": "WFM" },
+    { "id": 17093, "name": "אריאל כהן", "gender": "BOY", "nationalRating": 2145, "fideRating": 2098 },
+    { "id": 22518, "name": "תמר לוי", "gender": "GIRL", "nationalRating": 2088, "fideRating": 2035 },
+    { "id": 16741, "name": "עומר שפירא", "gender": "BOY", "nationalRating": 2010, "fideRating": 1975 },
+    { "id": 23906, "name": "נועה ברק", "gender": "GIRL", "nationalRating": 1955, "fideRating": 1902 },
+    { "id": 15488, "name": "איתי גולדשטיין", "gender": "BOY", "nationalRating": 1890, "fideRating": 1846 },
+    { "id": 24651, "name": "שירה מזרחי", "gender": "GIRL", "nationalRating": 1820, "fideRating": 1770 },
+    { "id": 25109, "name": "עידו פרץ", "gender": "BOY", "nationalRating": 1760, "fideRating": 1715 },
+    { "id": 26370, "name": "ליאור חדד", "gender": "BOY", "nationalRating": 1685, "fideRating": 1640 },
+    { "id": 27215, "name": "רוני אלבז", "gender": "GIRL", "nationalRating": 1510, "fideRating": 1478 },
+    { "id": 28044, "name": "גיא ניסים", "gender": "BOY", "nationalRating": 1430 }
+  ]
+}

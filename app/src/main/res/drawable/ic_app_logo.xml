@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gold chess pawn on deep navy -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="@color/deep_navy"
+        android:pathData="M20,0 h68 a20,20 0 0 1 20,20 v68 a20,20 0 0 1 -20,20 h-68 a20,20 0 0 1 -20,-20 v-68 a20,20 0 0 1 20,-20 z" />
+    <path
+        android:fillColor="@color/gold"
+        android:pathData="M54,22 a12,12 0 1 0 0.01,0 z" />
+    <path
+        android:fillColor="@color/gold"
+        android:pathData="M44,44 h20 v6 h-20 z" />
+    <path
+        android:fillColor="@color/gold"
+        android:pathData="M46,50 h16 l5,26 h-26 z" />
+    <path
+        android:fillColor="@color/gold"
+        android:pathData="M38,78 h32 v8 h-32 z" />
+</vector>
