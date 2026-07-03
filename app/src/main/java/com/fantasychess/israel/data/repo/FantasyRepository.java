@@ -1,6 +1,7 @@
 package com.fantasychess.israel.data.repo;
 
 import android.os.Handler;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -52,6 +53,7 @@ import java.util.function.Consumer;
  */
 public class FantasyRepository {
 
+    private static final String TAG = "FantasyRepository";
     public static final long STARTING_PAWNS = 1_000;
 
     /** Immutable snapshot of everything the UI needs. */
@@ -233,7 +235,7 @@ public class FantasyRepository {
 
     /** Loads persisted progress, grants starter packs and Pawns, fetches data. */
     public void initialize() {
-        executor.execute(() -> {
+        safeExecute(() -> {
             LocalStore.Snapshot saved = store.load();
             int currentWeek = GameWeek.currentWeekKey();
 
@@ -262,7 +264,7 @@ public class FantasyRepository {
 
     /** Fetches roster + weekly games from chess.org.il, falling back to samples. */
     public void refresh() {
-        executor.execute(this::refreshBlocking);
+        safeExecute(this::refreshBlocking);
     }
 
     private void refreshBlocking() {
@@ -299,7 +301,7 @@ public class FantasyRepository {
 
     /** Advances the simulated market: auctions, bot buys, fresh listings. */
     public void refreshMarket() {
-        executor.execute(this::refreshMarketBlocking);
+        safeExecute(this::refreshMarketBlocking);
     }
 
     private void refreshMarketBlocking() {
@@ -371,7 +373,7 @@ public class FantasyRepository {
 
     private void openPack(PackGenerator.PackType type,
                           Consumer<List<OwnedCard>> onOpened, Handler mainHandler) {
-        executor.execute(() -> {
+        safeExecute(() -> {
             State c = current;
             if (c.roster.isEmpty()) return;
             if (type == PackGenerator.PackType.PRO && c.proPacks <= 0) return;
@@ -393,7 +395,7 @@ public class FantasyRepository {
 
     /** Buys a Pro pack with Pawns (into inventory). */
     public void buyProPack() {
-        executor.execute(() -> {
+        safeExecute(() -> {
             State c = current;
             if (c.pawns < PackGenerator.PRO_PACK_PRICE_PAWNS) {
                 events.postValue(R.string.event_not_enough_pawns);
@@ -411,7 +413,7 @@ public class FantasyRepository {
      * is simulated by the UI; plug a real rewarded-ad SDK in at that call site.
      */
     public void grantAdReward(Consumer<List<OwnedCard>> onOpened, Handler mainHandler) {
-        executor.execute(() -> {
+        safeExecute(() -> {
             rolloverAdDay();
             if (adsLeft() <= 0) {
                 events.postValue(R.string.event_no_ads_left);
@@ -434,7 +436,7 @@ public class FantasyRepository {
 
     /** Claims the free weekly (gray) pack — one per game-week. */
     public void claimWeeklyPack() {
-        executor.execute(() -> {
+        safeExecute(() -> {
             State c = current;
             if (!c.weeklyPackReady) return;
             lastGrantWeek = GameWeek.currentWeekKey();
@@ -447,7 +449,7 @@ public class FantasyRepository {
     // ---- market --------------------------------------------------------------
 
     public void buyNow(String listingId) {
-        executor.execute(() -> {
+        safeExecute(() -> {
             State c = current;
             MarketListing listing = findListing(c, listingId);
             if (listing == null || listing.mine
@@ -467,7 +469,7 @@ public class FantasyRepository {
     }
 
     public void placeBid(String listingId, long amount) {
-        executor.execute(() -> {
+        safeExecute(() -> {
             State c = current;
             MarketListing listing = findListing(c, listingId);
             if (listing == null || listing.mine
@@ -496,7 +498,7 @@ public class FantasyRepository {
 
     /** Lists one of my cards for sale; the card leaves the collection. */
     public void listCard(String cardId, long price, boolean auction) {
-        executor.execute(() -> {
+        safeExecute(() -> {
             State c = current;
             OwnedCard card = c.cardById(cardId);
             if (card == null || !card.rarity.isTradable() || price <= 0) return;
@@ -521,7 +523,7 @@ public class FantasyRepository {
     }
 
     public void cancelMyListing(String listingId) {
-        executor.execute(() -> {
+        safeExecute(() -> {
             State c = current;
             MarketListing listing = findListing(c, listingId);
             if (listing == null || !listing.mine) return;
@@ -535,7 +537,7 @@ public class FantasyRepository {
 
     /** Sends a trade offer (cards + Pawns) for a listing; the bot answers now. */
     public void makeOffer(String listingId, List<String> offeredCardIds, long offeredPawns) {
-        executor.execute(() -> {
+        safeExecute(() -> {
             State c = current;
             MarketListing listing = findListing(c, listingId);
             if (listing == null || listing.mine) return;
@@ -578,7 +580,7 @@ public class FantasyRepository {
 
     /** Accepts a counter-offer: pays the extra Pawns on top of the original offer. */
     public void acceptCounter(String offerId) {
-        executor.execute(() -> {
+        safeExecute(() -> {
             State c = current;
             TradeOffer offer = findOffer(c, offerId);
             if (offer == null || offer.status != TradeOffer.Status.COUNTERED) return;
@@ -607,7 +609,7 @@ public class FantasyRepository {
     }
 
     public void declineCounter(String offerId) {
-        executor.execute(() -> {
+        safeExecute(() -> {
             TradeOffer offer = findOffer(current, offerId);
             if (offer == null || offer.status != TradeOffer.Status.COUNTERED) return;
             recordOffer(offer.withStatus(TradeOffer.Status.DECLINED));
@@ -618,7 +620,7 @@ public class FantasyRepository {
 
     public void setSquadSlot(int slot, String cardId) {
         if (slot < 0 || slot >= Squad.SQUAD_SIZE) return;
-        executor.execute(() -> {
+        safeExecute(() -> {
             publish(copy(current).squad(current.squad.withSlot(slot, cardId)).build());
             persist();
         });
@@ -626,7 +628,7 @@ public class FantasyRepository {
 
     public void setCaptain(int slot) {
         if (slot < 0 || slot >= Squad.SQUAD_SIZE) return;
-        executor.execute(() -> {
+        safeExecute(() -> {
             publish(copy(current).squad(current.squad.withCaptain(slot)).build());
             persist();
         });
@@ -708,6 +710,29 @@ public class FantasyRepository {
 
     private int adsLeft() {
         return Math.max(0, PackGenerator.MAX_ADS_PER_DAY - adCountToday);
+    }
+
+    /**
+     * Runs a repository task on the single background thread. Any failure is
+     * logged and swallowed, and the UI is released from the loading state, so
+     * an unexpected exception (bad network payload, storage hiccup, etc.) can
+     * never crash the whole app — it just leaves the last good state on screen.
+     */
+    private void safeExecute(Runnable task) {
+        executor.execute(() -> {
+            try {
+                task.run();
+            } catch (Throwable t) {
+                Log.e(TAG, "Background task failed", t);
+                try {
+                    if (current.loading) {
+                        publish(copy(current).loading(false).build());
+                    }
+                } catch (Throwable ignored) {
+                    // last-ditch: never let the executor thread die
+                }
+            }
+        });
     }
 
     private void publish(State next) {
