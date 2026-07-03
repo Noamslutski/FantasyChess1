@@ -1,6 +1,6 @@
 {
   "club": "הפועל פתח תקווה",
-  "note": "Sample roster used when chess.org.il is unreachable. Replaced automatically by live federation data when the API responds. Names here are placeholders, not real registered players.",
+  "note": "OFFLINE FALLBACK ONLY. The app loads the real roster of מועדון השחמט הפועל פתח תקוה live from chess.org.il (club id 30, see IcfApiConfig). This file is used only when the site is unreachable, and the names in it are placeholders — not real registered players. Replace freely with the real roster from https://www.chess.org.il/clubs/Club.aspx?Id=30.",
   "players": [
     { "id": 21804, "name": "הילה ברנשטיין", "gender": "GIRL", "nationalRating": 2452, "fideRating": 2410, "title": "IM" },
     { "id": 18342, "name": "דניאל אברמוביץ", "gender": "BOY", "nationalRating": 2385, "fideRating": 2344, "title": "FM" },

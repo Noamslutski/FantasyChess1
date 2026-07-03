@@ -2,12 +2,14 @@ package com.fantasychess.israel.ui.fragments;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,16 +21,22 @@ import com.fantasychess.israel.R;
 import com.fantasychess.israel.data.model.OwnedCard;
 import com.fantasychess.israel.data.model.Player;
 import com.fantasychess.israel.data.repo.FantasyRepository;
+import com.fantasychess.israel.domain.PackGenerator;
 import com.fantasychess.israel.ui.MainViewModel;
 import com.fantasychess.israel.ui.PlayerCardBinder;
 
 import java.util.List;
 
-/** Pack inventory: open packs with a staggered card-reveal animation. */
+/**
+ * Pack shop: free gray packs (starter + weekly), rewarded-ad packs (commons
+ * with a chance of Pro), and gold Pro packs bought with Pawns.
+ */
 public class PacksFragment extends Fragment {
 
     private MainViewModel viewModel;
     private Dialog revealDialog;
+    private Dialog adDialog;
+    private CountDownTimer adTimer;
 
     @Nullable
     @Override
@@ -41,12 +49,24 @@ public class PacksFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
 
-        view.findViewById(R.id.packs_btn_open).setOnClickListener(v -> viewModel.openPack());
+        view.findViewById(R.id.packs_btn_open_free)
+                .setOnClickListener(v -> viewModel.openFreePack());
         view.findViewById(R.id.packs_btn_claim)
                 .setOnClickListener(v -> viewModel.claimWeeklyPack());
+        view.findViewById(R.id.packs_btn_watch_ad).setOnClickListener(v -> showAd());
+        view.findViewById(R.id.packs_btn_open_pro)
+                .setOnClickListener(v -> viewModel.openProPack());
+        view.findViewById(R.id.packs_btn_buy_pro)
+                .setOnClickListener(v -> viewModel.buyProPack());
 
         viewModel.getState().observe(getViewLifecycleOwner(), state -> bind(view, state));
         viewModel.getLastOpenedPack().observe(getViewLifecycleOwner(), this::showReveal);
+        viewModel.getEvents().observe(getViewLifecycleOwner(), resId -> {
+            if (resId != null) {
+                Toast.makeText(requireContext(), resId, Toast.LENGTH_SHORT).show();
+                viewModel.clearEvent();
+            }
+        });
     }
 
     @Override
@@ -55,27 +75,80 @@ public class PacksFragment extends Fragment {
             revealDialog.dismiss();
             revealDialog = null;
         }
+        dismissAd();
         super.onDestroyView();
     }
 
     private void bind(View view, FantasyRepository.State state) {
-        TextView available = view.findViewById(R.id.packs_available);
-        available.setText(getString(R.string.packs_available, state.packsAvailable));
+        ((TextView) view.findViewById(R.id.packs_pawns))
+                .setText(String.valueOf(state.pawns));
 
-        Button open = view.findViewById(R.id.packs_btn_open);
-        open.setEnabled(state.packsAvailable > 0);
-
-        view.findViewById(R.id.packs_none).setVisibility(
-                state.packsAvailable == 0 ? View.VISIBLE : View.GONE);
-
-        TextView weeklyStatus = view.findViewById(R.id.packs_weekly_status);
+        // Free (gray) packs
+        ((TextView) view.findViewById(R.id.packs_free_count)).setText(
+                getString(R.string.packs_available, state.freePacks));
+        view.findViewById(R.id.packs_btn_open_free).setEnabled(state.freePacks > 0);
+        TextView weekly = view.findViewById(R.id.packs_weekly_status);
         Button claim = view.findViewById(R.id.packs_btn_claim);
         if (state.weeklyPackReady) {
-            weeklyStatus.setText(R.string.packs_weekly_ready);
+            weekly.setText(R.string.packs_weekly_ready);
             claim.setVisibility(View.VISIBLE);
         } else {
-            weeklyStatus.setText(R.string.packs_weekly_claimed);
+            weekly.setText(R.string.packs_weekly_claimed);
             claim.setVisibility(View.GONE);
+        }
+
+        // Ad packs
+        ((TextView) view.findViewById(R.id.packs_ads_left)).setText(
+                getString(R.string.packs_ads_left, state.adsLeftToday));
+        view.findViewById(R.id.packs_btn_watch_ad).setEnabled(state.adsLeftToday > 0);
+
+        // Pro (gold) packs
+        ((TextView) view.findViewById(R.id.packs_pro_count)).setText(
+                getString(R.string.packs_available, state.proPacks));
+        view.findViewById(R.id.packs_btn_open_pro).setEnabled(state.proPacks > 0);
+        ((Button) view.findViewById(R.id.packs_btn_buy_pro)).setText(
+                getString(R.string.packs_buy_pro, PackGenerator.PRO_PACK_PRICE_PAWNS));
+    }
+
+    /**
+     * Simulated rewarded ad: a short countdown, then the reward. To use a real
+     * ad network (e.g. AdMob rewarded ads), replace the body of this method
+     * with the SDK's show() call and invoke viewModel.grantAdReward() from the
+     * onUserEarnedReward callback.
+     */
+    private void showAd() {
+        View content = getLayoutInflater().inflate(R.layout.dialog_ad, null);
+        TextView countdown = content.findViewById(R.id.ad_countdown);
+
+        adDialog = new AlertDialog.Builder(requireContext())
+                .setView(content)
+                .setCancelable(false)
+                .create();
+        adDialog.show();
+
+        adTimer = new CountDownTimer(5_000, 1_000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                countdown.setText(getString(R.string.ad_countdown,
+                        (millisUntilFinished / 1_000) + 1));
+            }
+
+            @Override
+            public void onFinish() {
+                dismissAd();
+                viewModel.grantAdReward();
+            }
+        }.start();
+    }
+
+    private void dismissAd() {
+        if (adTimer != null) {
+            adTimer.cancel();
+            adTimer = null;
+        }
+        if (adDialog != null) {
+            adDialog.dismiss();
+            adDialog = null;
         }
     }
 

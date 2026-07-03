@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Pawns (🨅) currency icon: a golden chess pawn. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="16dp"
+    android:height="16dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="@color/gold"
+        android:pathData="M54,14 a14,14 0 1 0 0.01,0 z" />
+    <path
+        android:fillColor="@color/gold"
+        android:pathData="M42,40 h24 v7 h-24 z" />
+    <path
+        android:fillColor="@color/gold"
+        android:pathData="M45,47 h18 l6,30 h-30 z" />
+    <path
+        android:fillColor="@color/gold"
+        android:pathData="M35,80 h38 v9 h-38 z" />
+</vector>

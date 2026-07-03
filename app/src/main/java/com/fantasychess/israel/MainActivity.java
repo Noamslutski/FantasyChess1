@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.fantasychess.israel.ui.fragments.CollectionFragment;
 import com.fantasychess.israel.ui.fragments.HomeFragment;
+import com.fantasychess.israel.ui.fragments.MarketFragment;
 import com.fantasychess.israel.ui.fragments.PacksFragment;
 import com.fantasychess.israel.ui.fragments.PlayerDetailFragment;
 import com.fantasychess.israel.ui.fragments.SquadFragment;
@@ -20,6 +21,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // The market and collection belong to an account — gate behind login.
+        FantasyChessApplication app = (FantasyChessApplication) getApplication();
+        if (!app.getRepository().isLoggedIn()) {
+            android.content.Intent intent =
+                    new android.content.Intent(this, LoginActivity.class);
+            intent.putExtra(LoginActivity.EXTRA_AUTO_SKIP, false);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_main);
 
         bottomNav = findViewById(R.id.bottom_nav);
@@ -28,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
             int id = item.getItemId();
             if (id == R.id.nav_squad) {
                 fragment = new SquadFragment();
+            } else if (id == R.id.nav_market) {
+                fragment = new MarketFragment();
             } else if (id == R.id.nav_packs) {
                 fragment = new PacksFragment();
             } else if (id == R.id.nav_collection) {

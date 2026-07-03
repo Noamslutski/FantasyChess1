@@ -22,14 +22,16 @@ public final class IcfApiConfig {
     /** Classic site that hosts the per-player card pages (כרטיס שחקן). */
     public static final String LEGACY_BASE_URL = "https://www.chess.org.il";
 
-    /** Hapoel Petah Tikva chess club (מועדון שחמט הפועל פתח תקווה). */
+    /** Hapoel Petah Tikva chess club (מועדון השחמט הפועל פתח תקוה). */
     public static final String CLUB_NAME = "הפועל פתח תקווה";
 
     /**
-     * Club id on the federation site. Find it by opening the club page on
-     * chess.org.il and copying the id from the URL, then update this value.
+     * Real club id of מועדון השחמט הפועל פתח תקוה on the federation site —
+     * verified against https://www.chess.org.il/clubs/Club.aspx?Id=30
+     * (the club at מייזנר 11, פתח תקווה, opened 27/10/2013). A second entry
+     * exists at Id=2417; switch if the roster turns out to live there.
      */
-    public static final int CLUB_ID = 89;
+    public static final int CLUB_ID = 30;
 
     /** Browser-like UA; some federation pages reject unknown clients. */
     public static final String USER_AGENT =
@@ -51,11 +53,15 @@ public final class IcfApiConfig {
 
     /** Classic HTML player card (כרטיס שחקן) — scraped as a fallback. */
     public static String playerCardUrl(int playerId) {
-        return LEGACY_BASE_URL + "/Players/Player.aspx?Id=" + playerId;
+        return LEGACY_BASE_URL + "/players/Player.aspx?Id=" + playerId;
     }
 
-    /** Classic HTML club page — scraped as a fallback for the roster. */
+    /**
+     * Classic HTML club page — scraped as a fallback for the roster.
+     * URL pattern verified: /clubs/Club.aspx?Id={id} (player search lives at
+     * /players/searchplayers.aspx on the same site).
+     */
     public static String clubPageUrl() {
-        return LEGACY_BASE_URL + "/Clubs/Club.aspx?Id=" + CLUB_ID;
+        return LEGACY_BASE_URL + "/clubs/Club.aspx?Id=" + CLUB_ID;
     }
 }

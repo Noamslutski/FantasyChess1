@@ -14,7 +14,7 @@ import com.fantasychess.israel.data.model.Rarity;
 /**
  * Binds a player + rarity to the Sorare-style card layout
  * ({@code item_player_card.xml}), which is reused across the collection grid,
- * the picker, the pack reveal and the player page.
+ * the picker, the market, the pack reveal and the player page.
  */
 public final class PlayerCardBinder {
 
@@ -49,7 +49,7 @@ public final class PlayerCardBinder {
         TextView serialView = card.findViewById(R.id.card_serial);
         if (serial != null) {
             serialView.setVisibility(View.VISIBLE);
-            serialView.setText("#" + serial);
+            serialView.setText(serialText(rarity, serial));
             serialView.setTextColor(accent);
         } else {
             serialView.setVisibility(View.INVISIBLE);
@@ -64,30 +64,40 @@ public final class PlayerCardBinder {
         }
     }
 
+    /** Scarcity-aware serial: "#3/100" for capped tiers, "#3" for commons. */
+    public static String serialText(Rarity rarity, int serial) {
+        return rarity.mintLimitPerSeason > 0
+                ? "#" + serial + "/" + rarity.mintLimitPerSeason
+                : "#" + serial;
+    }
+
     public static int backgroundFor(Rarity rarity) {
         switch (rarity) {
+            case PRO: return R.drawable.bg_card_pro;
             case RARE: return R.drawable.bg_card_rare;
             case SUPER_RARE: return R.drawable.bg_card_super_rare;
             case UNIQUE: return R.drawable.bg_card_unique;
-            default: return R.drawable.bg_card_limited;
+            default: return R.drawable.bg_card_common;
         }
     }
 
     public static int accentColorFor(Rarity rarity) {
         switch (rarity) {
+            case PRO: return R.color.pro_accent;
             case RARE: return R.color.rare_accent;
             case SUPER_RARE: return R.color.super_rare_accent;
             case UNIQUE: return R.color.unique_accent;
-            default: return R.color.limited_accent;
+            default: return R.color.common_accent;
         }
     }
 
     public static int rarityLabelFor(Rarity rarity) {
         switch (rarity) {
+            case PRO: return R.string.rarity_pro;
             case RARE: return R.string.rarity_rare;
             case SUPER_RARE: return R.string.rarity_super_rare;
             case UNIQUE: return R.string.rarity_unique;
-            default: return R.string.rarity_limited;
+            default: return R.string.rarity_common;
         }
     }
 

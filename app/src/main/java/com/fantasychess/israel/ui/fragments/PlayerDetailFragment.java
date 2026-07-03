@@ -80,7 +80,7 @@ public class PlayerDetailFragment extends Fragment {
         View cardView = getLayoutInflater().inflate(
                 R.layout.item_player_card, cardContainer, false);
         PlayerCardBinder.bind(cardView, player,
-                best == null ? Rarity.LIMITED : best.rarity,
+                best == null ? Rarity.COMMON : best.rarity,
                 best == null ? null : best.serial,
                 FantasyScoring.weekPoints(player, games));
         cardContainer.addView(cardView);

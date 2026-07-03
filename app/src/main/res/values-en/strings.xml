@@ -4,9 +4,26 @@
 
     <string name="tab_home">Home</string>
     <string name="tab_squad">Squad</string>
+    <string name="tab_market">Market</string>
     <string name="tab_packs">Packs</string>
     <string name="tab_collection">Collection</string>
 
+    <string name="pawns_currency">Pawns</string>
+
+    <!-- Login -->
+    <string name="login_subtitle">The fantasy game of Hapoel Petah Tikva chess players</string>
+    <string name="login_username_hint">Username</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_register">Create account</string>
+    <string name="login_sign_in">Sign in</string>
+    <string name="login_have_account">Already have an account? Sign in</string>
+    <string name="login_no_account">No account? Register</string>
+    <string name="login_error_invalid">Username (2+ chars) and password (4+ chars) required</string>
+    <string name="login_error_exists">An account already exists on this device — sign in</string>
+    <string name="login_error_wrong">Wrong username or password</string>
+    <string name="login_local_note">The account is stored on this device only (no server yet). The password is stored as a SHA-256 hash.</string>
+
+    <!-- Home -->
     <string name="home_club_subtitle">Hapoel Petah Tikva Chess Club · 2026 season</string>
     <string name="home_gameweek">Gameweek %1$d</string>
     <string name="home_total_points">Fantasy points this gameweek</string>
@@ -16,6 +33,7 @@
     <string name="home_data_sample">○ Demo mode: federation site unavailable, showing sample data — tap to refresh</string>
     <string name="home_week_leaders">Gameweek leaders</string>
 
+    <!-- Squad -->
     <string name="squad_title">My squad</string>
     <string name="squad_total">%1$d pts</string>
     <string name="squad_hint">Pick 5 players from the cards you own. The captain scores x1.5.</string>
@@ -27,21 +45,90 @@
     <string name="squad_pick_title">Pick a card from your collection</string>
     <string name="squad_clear_slot">Clear slot</string>
 
+    <!-- Packs -->
     <string name="packs_title">Card packs</string>
-    <string name="packs_pack_name">Hapoel PT Pack</string>
-    <string name="packs_pack_contents">3 random cards from the club roster</string>
     <string name="packs_available">Packs available: %1$d</string>
     <string name="packs_open">Open pack</string>
-    <string name="packs_none">No packs right now — a free pack every gameweek!</string>
+    <string name="packs_free_title">Free pack (gray)</string>
+    <string name="packs_free_desc">3 Common cards — granted on sign-up and every gameweek</string>
     <string name="packs_weekly_ready">🎁 Your weekly pack is ready!</string>
     <string name="packs_weekly_claim">Claim weekly pack</string>
     <string name="packs_weekly_claimed">Weekly pack claimed. A new one arrives next gameweek.</string>
+    <string name="packs_ad_title">Ad pack</string>
+    <string name="packs_ad_desc">Watch an ad for a free pack: Common cards with a chance of a Pro!</string>
+    <string name="packs_ads_left">Ads left today: %1$d</string>
+    <string name="packs_watch_ad">▶ Watch ad</string>
+    <string name="packs_pro_title">Pro pack (gold)</string>
+    <string name="packs_pro_desc">3 minted cards: Pro 70% · Rare 24% · Super Rare 5% · Unique 1%</string>
+    <string name="packs_buy_pro">Buy for %1$d 🨅</string>
+    <string name="packs_rarity_explainer">Scarcity ladder (minted per season, per player):\n◾ Common (gray) — unlimited, from free packs, not tradable\n◾ Pro (yellow) — up to 5,000 per season, the entry-level tokenized card\n◾ Rare (red) — up to 100 per season\n◾ Super Rare (blue) — up to 10 per season\n◾ Unique (black) — exactly 1 per season. The ultimate collectible.</string>
     <string name="packs_reveal_title">New cards!</string>
+    <string name="ad_playing">Ad playing…</string>
+    <string name="ad_countdown">Reward in %1$d seconds</string>
 
+    <!-- Market -->
+    <string name="market_title">Transfer market</string>
+    <string name="market_subtitle">Buy cards from other managers via auctions or direct sales, and send trade offers — cards and/or Pawns</string>
+    <string name="market_sell_card">＋ Sell a card from your collection</string>
+    <string name="market_my_offers">My offers</string>
+    <string name="market_listings_title">Cards for sale</string>
+    <string name="market_auction">Auction</string>
+    <string name="market_direct_sale">Direct sale</string>
+    <string name="market_hours_left">%1$d hours left</string>
+    <string name="market_ending_soon">Ending soon</string>
+    <string name="market_my_listing">Your card for sale</string>
+    <string name="market_my_bid_leading">Your bid is leading</string>
+    <string name="market_current_bid_format">Current bid: %1$d 🨅</string>
+    <string name="market_ask_price_format">Price: %1$d 🨅</string>
+    <string name="market_buy_now">Buy now</string>
+    <string name="market_place_bid">Place bid</string>
+    <string name="market_bid_hint">Minimum %1$d</string>
+    <string name="market_make_offer">Offer a trade (cards + Pawns)</string>
+    <string name="market_cancel_listing">Cancel listing</string>
+
+    <!-- Trade offers -->
+    <string name="offer_dialog_title">Trade offer</string>
+    <string name="offer_dialog_hint">Pick cards from your collection and/or add Pawns. The other manager will accept, reject, or send a counter-offer.</string>
+    <string name="offer_no_tradable">You have no tradable cards (Common cards are not tradable)</string>
+    <string name="offer_pawns_hint">Pawns to add (optional)</string>
+    <string name="offer_send">Send offer</string>
+    <string name="offer_title_format">%1$s · %2$s %3$s</string>
+    <string name="offer_detail_format">You offered: %1$d cards + %2$d 🨅 · to %3$s</string>
+    <string name="offer_status_pending">Pending</string>
+    <string name="offer_status_accepted">Accepted ✓</string>
+    <string name="offer_status_rejected">Rejected</string>
+    <string name="offer_status_countered">Counter-offer!</string>
+    <string name="offer_status_declined">Declined</string>
+    <string name="offer_counter_format">Asks for %1$d 🨅 more to close the deal</string>
+    <string name="offer_accept">Accept</string>
+    <string name="offer_decline">Decline</string>
+
+    <!-- Sell -->
+    <string name="sell_dialog_title">Sell a card</string>
+    <string name="sell_dialog_hint">Pick a card, set a price (empty = suggested market value) and choose the sale type. The card leaves your collection until sold or cancelled.</string>
+    <string name="sell_price_hint">Price in Pawns</string>
+    <string name="sell_confirm">List for sale</string>
+
+    <!-- One-shot events -->
+    <string name="event_not_enough_pawns">Not enough Pawns 🨅</string>
+    <string name="event_bought">Card bought and added to your collection!</string>
+    <string name="event_bid_placed">Bid placed — good luck!</string>
+    <string name="event_bid_too_low">Bid too low</string>
+    <string name="event_outbid">Another manager outbid you</string>
+    <string name="event_auction_won">You won the auction! Card added to your collection</string>
+    <string name="event_listed">Card listed on the market</string>
+    <string name="event_offer_accepted">Offer accepted — the card is yours!</string>
+    <string name="event_offer_countered">You received a counter-offer — check the market</string>
+    <string name="event_offer_rejected">Offer rejected</string>
+    <string name="event_listing_gone">That card is no longer available</string>
+    <string name="event_no_ads_left">No ads left today — come back tomorrow!</string>
+
+    <!-- Collection -->
     <string name="collection_title">My collection</string>
     <string name="collection_count">%1$d cards in your collection</string>
     <string name="collection_empty">No cards yet — open a pack to get started!</string>
 
+    <!-- Player page -->
     <string name="player_not_found">Player not found</string>
     <string name="player_not_owned">You don\'t own a card of this player yet — try opening a pack</string>
     <string name="player_national_rating">National rating</string>
@@ -54,13 +141,15 @@
     <string name="result_draw">Draw</string>
     <string name="result_loss">Loss</string>
 
+    <!-- Card -->
     <string name="card_national_rating">Rtg %1$d</string>
     <string name="card_week_points">%1$d pts</string>
 
-    <string name="rarity_limited">Limited</string>
-    <string name="rarity_rare">Rare</string>
-    <string name="rarity_super_rare">Super Rare</string>
-    <string name="rarity_unique">Unique</string>
+    <string name="rarity_common">COMMON</string>
+    <string name="rarity_pro">PRO</string>
+    <string name="rarity_rare">RARE</string>
+    <string name="rarity_super_rare">SUPER RARE</string>
+    <string name="rarity_unique">UNIQUE</string>
 
     <string name="common_done">Done</string>
     <string name="common_back">Back</string>

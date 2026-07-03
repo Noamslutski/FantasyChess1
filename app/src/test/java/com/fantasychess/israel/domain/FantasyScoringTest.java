@@ -57,12 +57,14 @@ public class FantasyScoringTest {
     @Test
     public void captainAndRarityMultiply() {
         List<WeekGame> oneWin = Collections.singletonList(game(GameResult.WIN, 2000));
-        int base = FantasyScoring.slotPoints(PLAYER, oneWin, Rarity.LIMITED, false);
+        int common = FantasyScoring.slotPoints(PLAYER, oneWin, Rarity.COMMON, false);
+        int pro = FantasyScoring.slotPoints(PLAYER, oneWin, Rarity.PRO, false);
         int unique = FantasyScoring.slotPoints(PLAYER, oneWin, Rarity.UNIQUE, false);
-        int captain = FantasyScoring.slotPoints(PLAYER, oneWin, Rarity.LIMITED, true);
-        assertEquals(60, base);
-        assertEquals(72, unique);   // x1.2
+        int captain = FantasyScoring.slotPoints(PLAYER, oneWin, Rarity.COMMON, true);
+        assertEquals(60, common);
+        assertEquals(63, pro);      // x1.05
+        assertEquals(84, unique);   // x1.4
         assertEquals(90, captain);  // x1.5
-        assertTrue(unique > base && captain > base);
+        assertTrue(unique > common && captain > common);
     }
 }

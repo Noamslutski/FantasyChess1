@@ -7,100 +7,235 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:orientation="vertical"
         android:padding="16dp">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/packs_title"
-            android:textColor="@color/text_primary"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/packs_title"
+                android:textColor="@color/text_primary"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_surface_rounded"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="10dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="5dp">
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:contentDescription="@string/pawns_currency"
+                    android:src="@drawable/ic_pawn" />
+
+                <TextView
+                    android:id="@+id/packs_pawns"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:textColor="@color/gold"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Free (gray, commons) pack -->
         <LinearLayout
-            android:layout_width="220dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/bg_pack"
-            android:gravity="center_horizontal"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_card_common"
             android:orientation="vertical"
-            android:padding="24dp">
-
-            <ImageView
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_app_logo" />
+            android:padding="14dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:gravity="center"
-                android:text="@string/packs_pack_name"
-                android:textColor="@color/gold"
+                android:text="@string/packs_free_title"
+                android:textColor="@color/card_text"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/packs_pack_contents"
+                android:text="@string/packs_free_desc"
                 android:textColor="@color/card_text_dim"
-                android:textSize="12sp" />
+                android:textSize="11.5sp" />
+
+            <TextView
+                android:id="@+id/packs_free_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/card_text"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/packs_btn_open_free"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/text_primary"
+                    android:text="@string/packs_open"
+                    android:textColor="@color/deep_navy"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/packs_btn_claim"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/packs_weekly_claim"
+                    android:textColor="@color/card_text"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/packs_weekly_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/card_text_dim"
+                android:textSize="11sp" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/packs_available"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textColor="@color/text_primary"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/packs_btn_open"
-            style="@style/Widget.Material3.Button"
-            android:layout_width="wrap_content"
+        <!-- Rewarded-ad pack -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:backgroundTint="@color/gold"
-            android:text="@string/packs_open"
-            android:textColor="@color/deep_navy"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:background="@drawable/bg_surface_rounded"
+            android:orientation="vertical"
+            android:padding="14dp">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/packs_ad_title"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/packs_ad_desc"
+                android:textColor="@color/text_secondary"
+                android:textSize="11.5sp" />
+
+            <TextView
+                android:id="@+id/packs_ads_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/packs_btn_watch_ad"
+                style="@style/Widget.Material3.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:backgroundTint="@color/electric_blue"
+                android:text="@string/packs_watch_ad"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Pro (gold) pack -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_card_pro"
+            android:orientation="vertical"
+            android:padding="14dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/packs_pro_title"
+                android:textColor="@color/card_text"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/packs_pro_desc"
+                android:textColor="@color/card_text_dim"
+                android:textSize="11.5sp" />
+
+            <TextView
+                android:id="@+id/packs_pro_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/card_text"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/packs_btn_open_pro"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/deep_navy"
+                    android:text="@string/packs_open"
+                    android:textColor="@color/gold"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/packs_btn_buy_pro"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/card_text" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Scarcity ladder explainer -->
         <TextView
-            android:id="@+id/packs_none"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="@string/packs_none"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:lineSpacingExtra="3dp"
+            android:text="@string/packs_rarity_explainer"
             android:textColor="@color/text_secondary"
-            android:textSize="12sp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/packs_weekly_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:gravity="center"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/packs_btn_claim"
-            style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/packs_weekly_claim"
-            android:textColor="@color/gold"
-            android:visibility="gone" />
+            android:textSize="11sp" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

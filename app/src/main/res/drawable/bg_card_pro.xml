@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Unique: 1 minted per season — pure black with a gold trim. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <gradient
         android:angle="270"
-        android:startColor="@color/unique_start"
-        android:endColor="@color/unique_end" />
+        android:startColor="@color/pro_start"
+        android:endColor="@color/pro_end" />
     <corners android:radius="16dp" />
     <stroke
         android:width="1.5dp"
-        android:color="@color/unique_accent" />
+        android:color="@color/pro_accent" />
 </shape>

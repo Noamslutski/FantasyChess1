@@ -57,7 +57,7 @@ public class LeadersAdapter extends RecyclerView.Adapter<LeadersAdapter.LeaderVi
     public void onBindViewHolder(@NonNull LeaderViewHolder holder, int position) {
         Player player = players.get(position);
         Integer points = weekPoints.get(player.id);
-        PlayerCardBinder.bind(holder.itemView, player, Rarity.LIMITED, null,
+        PlayerCardBinder.bind(holder.itemView, player, Rarity.COMMON, null,
                 points == null ? 0 : points);
         holder.itemView.setOnClickListener(v -> listener.onPlayerClick(player));
     }

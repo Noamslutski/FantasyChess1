@@ -4,9 +4,26 @@
 
     <string name="tab_home">בית</string>
     <string name="tab_squad">הרכב</string>
+    <string name="tab_market">שוק</string>
     <string name="tab_packs">חבילות</string>
     <string name="tab_collection">אוסף</string>
 
+    <string name="pawns_currency">פיונים</string>
+
+    <!-- Login -->
+    <string name="login_subtitle">משחק הפנטזי של שחקני הפועל פתח תקווה</string>
+    <string name="login_username_hint">שם משתמש</string>
+    <string name="login_password_hint">סיסמה</string>
+    <string name="login_register">צור חשבון</string>
+    <string name="login_sign_in">התחבר</string>
+    <string name="login_have_account">כבר יש לך חשבון? התחבר</string>
+    <string name="login_no_account">אין לך חשבון? הירשם</string>
+    <string name="login_error_invalid">שם משתמש (2+ תווים) וסיסמה (4+ תווים) נדרשים</string>
+    <string name="login_error_exists">כבר קיים חשבון במכשיר הזה — התחבר אליו</string>
+    <string name="login_error_wrong">שם המשתמש או הסיסמה שגויים</string>
+    <string name="login_local_note">החשבון נשמר במכשיר זה בלבד (אין עדיין שרת). הסיסמה נשמרת כגיבוב SHA-256.</string>
+
+    <!-- Home -->
     <string name="home_club_subtitle">מועדון שחמט הפועל פתח תקווה · עונת 2026</string>
     <string name="home_gameweek">מחזור %1$d</string>
     <string name="home_total_points">נקודות פנטזי במחזור הנוכחי</string>
@@ -16,6 +33,7 @@
     <string name="home_data_sample">○ מצב הדגמה: אתר האיגוד אינו זמין כרגע, מוצגים נתוני דוגמה — לחץ לרענון</string>
     <string name="home_week_leaders">מצטייני המחזור</string>
 
+    <!-- Squad -->
     <string name="squad_title">ההרכב שלי</string>
     <string name="squad_total">%1$d נק׳</string>
     <string name="squad_hint">בחר 5 שחקנים מהקלפים שברשותך. הקפטן מכפיל את הנקודות שלו פי 1.5.</string>
@@ -27,21 +45,90 @@
     <string name="squad_pick_title">בחר קלף מהאוסף</string>
     <string name="squad_clear_slot">פנה משבצת</string>
 
+    <!-- Packs -->
     <string name="packs_title">חבילות קלפים</string>
-    <string name="packs_pack_name">חבילת הפועל פ״ת</string>
-    <string name="packs_pack_contents">3 קלפים אקראיים מסגל המועדון</string>
     <string name="packs_available">חבילות זמינות: %1$d</string>
     <string name="packs_open">פתח חבילה</string>
-    <string name="packs_none">אין חבילות כרגע — חבילה חינם בכל מחזור!</string>
+    <string name="packs_free_title">חבילה חינמית (אפורה)</string>
+    <string name="packs_free_desc">3 קלפי Common — מתקבלת בהרשמה ובכל מחזור</string>
     <string name="packs_weekly_ready">🎁 החבילה השבועית שלך מוכנה!</string>
     <string name="packs_weekly_claim">אסוף חבילה שבועית</string>
     <string name="packs_weekly_claimed">החבילה השבועית נאספה. חבילה חדשה בתחילת המחזור הבא.</string>
+    <string name="packs_ad_title">חבילת פרסומת</string>
+    <string name="packs_ad_desc">צפה בפרסומת וקבל חבילה חינם: קלפי Common עם סיכוי לקלף Pro!</string>
+    <string name="packs_ads_left">פרסומות שנותרו היום: %1$d</string>
+    <string name="packs_watch_ad">▶ צפה בפרסומת</string>
+    <string name="packs_pro_title">חבילת פרו (זהב)</string>
+    <string name="packs_pro_desc">3 קלפים מונפקים: Pro 70% · Rare 24% · Super Rare 5% · Unique 1%</string>
+    <string name="packs_buy_pro">קנה ב-%1$d 🨅</string>
+    <string name="packs_rarity_explainer">סולם הנדירות (הנפקה לעונה, לכל שחקן):\n◾ Common (אפור) — ללא הגבלה, מחבילות חינם, לא סחיר\n◾ Pro (צהוב) — עד 5,000 לעונה, קלף הכניסה לשוק\n◾ Rare (אדום) — עד 100 לעונה\n◾ Super Rare (כחול) — עד 10 לעונה\n◾ Unique (שחור) — אחד בלבד לעונה. האספנות האולטימטיבית.</string>
     <string name="packs_reveal_title">קלפים חדשים!</string>
+    <string name="ad_playing">פרסומת מתנגנת…</string>
+    <string name="ad_countdown">הפרס בעוד %1$d שניות</string>
 
+    <!-- Market -->
+    <string name="market_title">שוק ההעברות</string>
+    <string name="market_subtitle">קנה קלפים ממנהלים אחרים במכרזים או במכירה ישירה, שלח הצעות החלפה — קלפים ו/או פיונים</string>
+    <string name="market_sell_card">＋ מכור קלף מהאוסף</string>
+    <string name="market_my_offers">ההצעות שלי</string>
+    <string name="market_listings_title">קלפים למכירה</string>
+    <string name="market_auction">מכרז</string>
+    <string name="market_direct_sale">מכירה ישירה</string>
+    <string name="market_hours_left">נותרו %1$d שעות</string>
+    <string name="market_ending_soon">מסתיים בקרוב</string>
+    <string name="market_my_listing">הקלף שלך למכירה</string>
+    <string name="market_my_bid_leading">ההצעה שלך מובילה</string>
+    <string name="market_current_bid_format">הצעה נוכחית: %1$d 🨅</string>
+    <string name="market_ask_price_format">מחיר: %1$d 🨅</string>
+    <string name="market_buy_now">קנה עכשיו</string>
+    <string name="market_place_bid">הגש הצעה</string>
+    <string name="market_bid_hint">מינימום %1$d</string>
+    <string name="market_make_offer">הצע החלפה (קלפים + פיונים)</string>
+    <string name="market_cancel_listing">בטל את המכירה</string>
+
+    <!-- Trade offers -->
+    <string name="offer_dialog_title">הצעת החלפה</string>
+    <string name="offer_dialog_hint">בחר קלפים מהאוסף שלך ו/או הוסף פיונים. המנהל השני יקבל, ידחה או ישלח הצעה נגדית.</string>
+    <string name="offer_no_tradable">אין לך קלפים סחירים (קלפי Common אינם סחירים)</string>
+    <string name="offer_pawns_hint">פיונים להוספה (רשות)</string>
+    <string name="offer_send">שלח הצעה</string>
+    <string name="offer_title_format">%1$s · %2$s %3$s</string>
+    <string name="offer_detail_format">הצעת: %1$d קלפים + %2$d 🨅 · מול %3$s</string>
+    <string name="offer_status_pending">ממתין</string>
+    <string name="offer_status_accepted">התקבלה ✓</string>
+    <string name="offer_status_rejected">נדחתה</string>
+    <string name="offer_status_countered">הצעה נגדית!</string>
+    <string name="offer_status_declined">בוטלה</string>
+    <string name="offer_counter_format">מבקש עוד %1$d 🨅 להשלמת העסקה</string>
+    <string name="offer_accept">אשר</string>
+    <string name="offer_decline">דחה</string>
+
+    <!-- Sell -->
+    <string name="sell_dialog_title">מכור קלף</string>
+    <string name="sell_dialog_hint">בחר קלף, קבע מחיר (ריק = מחיר שוק מוצע) ובחר סוג מכירה. הקלף יורד מהאוסף עד למכירה או לביטול.</string>
+    <string name="sell_price_hint">מחיר בפיונים</string>
+    <string name="sell_confirm">העלה למכירה</string>
+
+    <!-- One-shot events -->
+    <string name="event_not_enough_pawns">אין מספיק פיונים 🨅</string>
+    <string name="event_bought">הקלף נרכש ונוסף לאוסף!</string>
+    <string name="event_bid_placed">ההצעה הוגשה — בהצלחה!</string>
+    <string name="event_bid_too_low">ההצעה נמוכה מדי</string>
+    <string name="event_outbid">מנהל אחר עקף את ההצעה שלך במכרז</string>
+    <string name="event_auction_won">זכית במכרז! הקלף נוסף לאוסף</string>
+    <string name="event_listed">הקלף הועלה לשוק</string>
+    <string name="event_offer_accepted">ההצעה התקבלה — הקלף שלך!</string>
+    <string name="event_offer_countered">קיבלת הצעה נגדית — בדוק בשוק</string>
+    <string name="event_offer_rejected">ההצעה נדחתה</string>
+    <string name="event_listing_gone">הקלף כבר לא זמין</string>
+    <string name="event_no_ads_left">נגמרו הפרסומות להיום — חזור מחר!</string>
+
+    <!-- Collection -->
     <string name="collection_title">האוסף שלי</string>
     <string name="collection_count">%1$d קלפים באוסף</string>
     <string name="collection_empty">עדיין אין קלפים באוסף — פתח חבילה כדי להתחיל!</string>
 
+    <!-- Player page -->
     <string name="player_not_found">השחקן לא נמצא</string>
     <string name="player_not_owned">אין לך עדיין קלף של שחקן זה — נסה לפתוח חבילה</string>
     <string name="player_national_rating">מדד לאומי</string>
@@ -54,13 +141,15 @@
     <string name="result_draw">תיקו</string>
     <string name="result_loss">הפסד</string>
 
+    <!-- Card -->
     <string name="card_national_rating">מדד %1$d</string>
     <string name="card_week_points">%1$d נק׳</string>
 
-    <string name="rarity_limited">Limited</string>
-    <string name="rarity_rare">Rare</string>
-    <string name="rarity_super_rare">Super Rare</string>
-    <string name="rarity_unique">Unique</string>
+    <string name="rarity_common">COMMON</string>
+    <string name="rarity_pro">PRO</string>
+    <string name="rarity_rare">RARE</string>
+    <string name="rarity_super_rare">SUPER RARE</string>
+    <string name="rarity_unique">UNIQUE</string>
 
     <string name="common_done">אישור</string>
     <string name="common_back">חזרה</string>

@@ -81,8 +81,12 @@ public class HomeFragment extends Fragment {
         TextView points = view.findViewById(R.id.home_points);
         points.setText(String.valueOf(state.totalPoints()));
 
+        TextView pawns = view.findViewById(R.id.home_pawns);
+        pawns.setText(String.valueOf(state.pawns));
+
         TextView packsButton = view.findViewById(R.id.home_btn_packs);
-        packsButton.setText(getString(R.string.home_packs_button, state.packsAvailable));
+        packsButton.setText(getString(R.string.home_packs_button,
+                state.freePacks + state.proPacks));
 
         TextView dataSource = view.findViewById(R.id.home_data_source);
         if (state.dataSource == DataSource.LIVE_API) {
