@@ -1,5 +1,8 @@
 package com.fantasychess.israel.ui.fragments;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +19,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.fantasychess.israel.R;
+import com.fantasychess.israel.data.api.IcfApiConfig;
+import com.fantasychess.israel.data.model.Fixture;
 import com.fantasychess.israel.data.model.GameResult;
 import com.fantasychess.israel.data.model.OwnedCard;
 import com.fantasychess.israel.data.model.Player;
@@ -22,6 +28,7 @@ import com.fantasychess.israel.data.model.Rarity;
 import com.fantasychess.israel.data.model.WeekGame;
 import com.fantasychess.israel.data.repo.FantasyRepository;
 import com.fantasychess.israel.domain.FantasyScoring;
+import com.fantasychess.israel.domain.FixtureGenerator;
 import com.fantasychess.israel.ui.MainViewModel;
 import com.fantasychess.israel.ui.PlayerCardBinder;
 
@@ -95,7 +102,57 @@ public class PlayerDetailFragment extends Fragment {
         ((TextView) view.findViewById(R.id.stat_card))
                 .setText(String.valueOf(player.cardRating()));
 
+        bindTeam(view, player);
+        bindFixtures(view, player);
+        bindFederationLink(view, player);
         bindGames(view, player, games);
+    }
+
+    private void bindTeam(View view, Player player) {
+        TextView team = view.findViewById(R.id.detail_team);
+        if (player.team == null || player.team.isEmpty()) {
+            team.setText(player.club);
+        } else if (player.league == null || player.league.isEmpty()) {
+            team.setText(getString(R.string.player_team_format, player.team, player.club));
+        } else {
+            team.setText(getString(R.string.player_team_league_format,
+                    player.team, player.league));
+        }
+    }
+
+    /** The "next games" the user asked for: upcoming league fixtures. */
+    private void bindFixtures(View view, Player player) {
+        LinearLayout container = view.findViewById(R.id.detail_fixtures_container);
+        container.removeAllViews();
+        float density = getResources().getDisplayMetrics().density;
+
+        for (Fixture fixture : FixtureGenerator.upcoming(player)) {
+            View row = getLayoutInflater().inflate(R.layout.item_fixture, container, false);
+            ((TextView) row.findViewById(R.id.fixture_opponent)).setText(
+                    getString(fixture.home ? R.string.fixture_vs_home : R.string.fixture_vs_away,
+                            fixture.opponentClub));
+            ((TextView) row.findViewById(R.id.fixture_meta)).setText(
+                    getString(R.string.fixture_round, fixture.roundNumber) + " · " + fixture.league);
+            ((TextView) row.findViewById(R.id.fixture_date)).setText(fixture.dateIso);
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.bottomMargin = (int) (8 * density);
+            container.addView(row, params);
+        }
+    }
+
+    /** Opens the player's real page on chess.org.il — a live look at their games. */
+    private void bindFederationLink(View view, Player player) {
+        view.findViewById(R.id.detail_federation_link).setOnClickListener(v -> {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(IcfApiConfig.playerCardUrl(player.id))));
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(requireContext(), R.string.player_no_browser,
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void bindGames(View view, Player player, List<WeekGame> games) {

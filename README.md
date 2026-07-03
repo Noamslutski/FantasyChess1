@@ -97,13 +97,17 @@ The app loads data in this order, so it **always runs smoothly**:
    or whenever the site is unreachable. The home screen shows an honest
    "demo mode" banner whenever sample data is displayed; tapping retries.
 
-> **Why the fallback names are placeholders:** chess.org.il blocks
-> server-side fetchers (Cloudflare), and this project was developed in a
-> sandbox whose network policy blocks the site entirely, so the club's real
-> member list could not be pulled here. **On a phone the app fetches the real
-> roster live from club page Id=30.** If you want real names in the offline
-> fallback too, open the club page in a browser and paste the players into
-> the JSON asset — the format is self-explanatory.
+> **The bundled roster is real.** `assets/hapoel_pt_players.json` now holds
+> real Hapoel Petah Tikva members (real federation ids, names and national
+> ratings, with gender taken from the women's-team affiliation). On a phone
+> the app still tries to refresh the full roster live from club page Id=30
+> first and only falls back to this bundled list when the site is unreachable.
+>
+> **Next games + live link.** Tapping a card opens the player page, which
+> shows the player's team/league, their **next games** (upcoming league
+> rounds generated from their real team and league), and a
+> **"View on chess.org.il"** button that opens that player's real federation
+> page by id (`/players/Player.aspx?Id=…`) for the authoritative game list.
 
 ## Architecture
 

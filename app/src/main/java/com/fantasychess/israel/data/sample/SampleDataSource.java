@@ -47,7 +47,9 @@ public class SampleDataSource {
                     obj.get("nationalRating").getAsInt(),
                     obj.has("fideRating") ? obj.get("fideRating").getAsInt() : null,
                     obj.has("title") ? obj.get("title").getAsString() : null,
-                    club));
+                    club,
+                    obj.has("team") ? obj.get("team").getAsString() : null,
+                    obj.has("league") ? obj.get("league").getAsString() : null));
         }
         return players;
     }

@@ -136,6 +136,14 @@
     <string name="player_card_rating">דירוג קלף</string>
     <string name="player_week_games">משחקי השבוע</string>
     <string name="player_no_games">אין משחקים במחזור הנוכחי</string>
+    <string name="player_next_games">המשחקים הבאים</string>
+    <string name="player_team_format">%1$s · %2$s</string>
+    <string name="player_team_league_format">%1$s · %2$s</string>
+    <string name="player_view_on_federation">צפה בפרופיל ובמשחקים באתר האיגוד ↗</string>
+    <string name="player_no_browser">לא נמצא דפדפן לפתיחת הקישור</string>
+    <string name="fixture_vs_home">נגד %1$s (בית)</string>
+    <string name="fixture_vs_away">נגד %1$s (חוץ)</string>
+    <string name="fixture_round">סבב %1$d</string>
     <string name="game_vs">נגד %1$s</string>
     <string name="result_win">ניצחון</string>
     <string name="result_draw">תיקו</string>

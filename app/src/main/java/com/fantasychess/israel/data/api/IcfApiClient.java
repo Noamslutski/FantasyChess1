@@ -70,7 +70,9 @@ public class IcfApiClient {
                         rating,
                         firstInt(obj, "fide_rating", "fide"),
                         firstString(obj, "title"),
-                        IcfApiConfig.CLUB_NAME));
+                        IcfApiConfig.CLUB_NAME,
+                        firstString(obj, "team", "squad"),
+                        firstString(obj, "league")));
             }
             return players.isEmpty() ? null : players;
         } catch (RuntimeException e) {

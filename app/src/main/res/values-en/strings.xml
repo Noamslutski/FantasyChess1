@@ -136,6 +136,14 @@
     <string name="player_card_rating">Card rating</string>
     <string name="player_week_games">This week\'s games</string>
     <string name="player_no_games">No games this gameweek</string>
+    <string name="player_next_games">Next games</string>
+    <string name="player_team_format">%1$s · %2$s</string>
+    <string name="player_team_league_format">%1$s · %2$s</string>
+    <string name="player_view_on_federation">View profile &amp; games on chess.org.il ↗</string>
+    <string name="player_no_browser">No browser found to open the link</string>
+    <string name="fixture_vs_home">vs %1$s (home)</string>
+    <string name="fixture_vs_away">vs %1$s (away)</string>
+    <string name="fixture_round">Round %1$d</string>
     <string name="game_vs">vs %1$s</string>
     <string name="result_win">Win</string>
     <string name="result_draw">Draw</string>
