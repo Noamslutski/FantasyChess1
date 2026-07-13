@@ -48,9 +48,9 @@ public class MintLedgerTest {
     @Test
     public void freePacksMintCommonsOnly() {
         List<Player> roster = Arrays.asList(
-                new Player(1, "א", Gender.BOY, 2000, null, null, "מועדון"),
-                new Player(2, "ב", Gender.GIRL, 1800, null, null, "מועדון"),
-                new Player(3, "ג", Gender.BOY, 1600, null, null, "מועדון"));
+                new Player(1, "א", Gender.BOY, 2000, null, null, null, "מועדון", null, null),
+                new Player(2, "ב", Gender.GIRL, 1800, null, null, null, "מועדון", null, null),
+                new Player(3, "ג", Gender.BOY, 1600, null, null, null, "מועדון", null, null));
         PackGenerator generator = new PackGenerator(new Random(42));
         MintLedger ledger = new MintLedger(null);
         List<OwnedCard> cards = generator.openPack(
@@ -64,7 +64,7 @@ public class MintLedgerTest {
     @Test
     public void proPackDowngradesWhenTierIsSoldOut() {
         List<Player> roster = Arrays.asList(
-                new Player(1, "א", Gender.BOY, 2000, null, null, "מועדון"));
+                new Player(1, "א", Gender.BOY, 2000, null, null, null, "מועדון", null, null));
         MintLedger ledger = new MintLedger(null);
         // Sell out every tokenized tier for this player.
         ledger.mint(1, Rarity.UNIQUE);

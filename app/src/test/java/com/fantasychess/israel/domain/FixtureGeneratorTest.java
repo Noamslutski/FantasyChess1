@@ -17,7 +17,7 @@ public class FixtureGeneratorTest {
 
     private static Player player(String league) {
         return new Player(24210, "בני איזנברג", Gender.BOY, 2524, null, null,
-                "הפועל פתח תקווה", "הפועל פ\"ת ב'", league);
+                null, "הפועל פתח תקווה", "הפועל פ\"ת ב'", league);
     }
 
     @Test

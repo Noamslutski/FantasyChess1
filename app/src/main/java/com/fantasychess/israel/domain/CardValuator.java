@@ -14,6 +14,7 @@ public final class CardValuator {
     }
 
     public static long value(Player player, Rarity rarity) {
+        if (rarity == null) rarity = Rarity.COMMON;
         long base = 2L * player.cardRating();
         switch (rarity) {
             case COMMON: return Math.max(1, base / 4); // play-only, trade math only

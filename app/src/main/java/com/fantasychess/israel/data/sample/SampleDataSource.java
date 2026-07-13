@@ -46,6 +46,7 @@ public class SampleDataSource {
                     Gender.valueOf(obj.get("gender").getAsString()),
                     obj.get("nationalRating").getAsInt(),
                     obj.has("fideRating") ? obj.get("fideRating").getAsInt() : null,
+                    null, // fideId
                     obj.has("title") ? obj.get("title").getAsString() : null,
                     club,
                     obj.has("team") ? obj.get("team").getAsString() : null,

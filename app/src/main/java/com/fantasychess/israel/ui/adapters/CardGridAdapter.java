@@ -76,7 +76,7 @@ public class CardGridAdapter extends RecyclerView.Adapter<CardGridAdapter.CardVi
         OwnedCard card = cards.get(position);
         Player player = state == null ? null : state.playerById(card.playerId);
         if (player == null) {
-            holder.itemView.setVisibility(View.INVISIBLE);
+            holder.itemView.setVisibility(View.GONE);
             return;
         }
         holder.itemView.setVisibility(View.VISIBLE);

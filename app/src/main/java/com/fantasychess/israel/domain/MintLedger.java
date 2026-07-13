@@ -28,6 +28,7 @@ public class MintLedger {
     }
 
     public boolean canMint(int playerId, Rarity rarity) {
+        if (rarity == null) return true; // null/common are unlimited
         return rarity.mintLimitPerSeason == 0
                 || minted(playerId, rarity) < rarity.mintLimitPerSeason;
     }
@@ -44,6 +45,6 @@ public class MintLedger {
     }
 
     private static String key(int playerId, Rarity rarity) {
-        return playerId + ":" + rarity.name();
+        return playerId + ":" + (rarity == null ? "COMMON" : rarity.name());
     }
 }

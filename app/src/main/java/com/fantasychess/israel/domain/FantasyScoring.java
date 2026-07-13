@@ -68,7 +68,8 @@ public final class FantasyScoring {
     /** Final score for one squad slot, applying rarity and captain multipliers. */
     public static int slotPoints(Player player, List<WeekGame> games,
                                  Rarity rarity, boolean isCaptain) {
-        double points = weekPoints(player, games) * (1.0 + rarity.scoreBonus);
+        double bonus = (rarity == null) ? 0.0 : rarity.scoreBonus;
+        double points = weekPoints(player, games) * (1.0 + bonus);
         if (isCaptain) points *= Squad.CAPTAIN_MULTIPLIER;
         return (int) Math.round(points);
     }

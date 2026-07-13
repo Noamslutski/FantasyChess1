@@ -15,24 +15,39 @@ public class Player {
     public final Gender gender;
     public final int nationalRating;
     public final Integer fideRating; // nullable
+    public final Integer fideId;     // nullable
     public final String title;       // nullable, e.g. "IM", "WFM"
     public final String club;
-    public final String team;        // nullable, e.g. "הפועל פ\"ת ב'"
-    public final String league;      // nullable, e.g. "ליגה לאומית"
+    public final String team;        // nullable
+    public final String league;      // nullable
 
+    /** Traditional 7-arg constructor for simple cases and tests. */
     public Player(int id, String name, Gender gender, int nationalRating,
                   Integer fideRating, String title, String club) {
-        this(id, name, gender, nationalRating, fideRating, title, club, null, null);
+        this(id, name, gender, nationalRating, fideRating, null, title, club, null, null);
+    }
+
+    /** 8-arg constructor used by the HTML parser fallback. */
+    public Player(int id, String name, Gender gender, int nationalRating,
+                  Integer fideRating, Integer fideId, String title, String club) {
+        this(id, name, gender, nationalRating, fideRating, fideId, title, club, null, null);
+    }
+
+    /** 9-arg constructor used by the JSON API client and Sample DataSource. */
+    public Player(int id, String name, Gender gender, int nationalRating,
+                  Integer fideRating, String title, String club, String team, String league) {
+        this(id, name, gender, nationalRating, fideRating, null, title, club, team, league);
     }
 
     public Player(int id, String name, Gender gender, int nationalRating,
-                  Integer fideRating, String title, String club,
+                  Integer fideRating, Integer fideId, String title, String club,
                   String team, String league) {
         this.id = id;
         this.name = name;
         this.gender = gender == null ? Gender.BOY : gender;
         this.nationalRating = nationalRating;
         this.fideRating = fideRating;
+        this.fideId = fideId;
         this.title = title;
         this.club = club;
         this.team = team;

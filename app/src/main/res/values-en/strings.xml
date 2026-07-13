@@ -148,6 +148,7 @@
     <string name="result_win">Win</string>
     <string name="result_draw">Draw</string>
     <string name="result_loss">Loss</string>
+    <string name="result_upcoming">Upcoming</string>
 
     <!-- Card -->
     <string name="card_national_rating">Rtg %1$d</string>
@@ -161,4 +162,9 @@
 
     <string name="common_done">Done</string>
     <string name="common_back">Back</string>
+
+    <string name="logout">Logout</string>
+    <string name="buy_pawns">Buy 🨅</string>
+    <string name="buy_pawns_dialog_title">Buy Pawns</string>
+    <string name="buy_pawns_amount">Choose amount to buy:</string>
 </resources>

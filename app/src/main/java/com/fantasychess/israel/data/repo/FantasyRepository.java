@@ -1,6 +1,7 @@
 package com.fantasychess.israel.data.repo;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -35,8 +36,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -62,6 +65,7 @@ public class FantasyRepository {
         public final List<Player> roster;
         public final Map<Integer, List<com.fantasychess.israel.data.model.WeekGame>> weekGames;
         public final List<OwnedCard> ownedCards;
+        public final Map<Integer, Player> playerCache;
         public final Squad squad;
         public final int freePacks;
         public final int proPacks;
@@ -76,7 +80,7 @@ public class FantasyRepository {
 
         State(boolean loading, List<Player> roster,
               Map<Integer, List<com.fantasychess.israel.data.model.WeekGame>> weekGames,
-              List<OwnedCard> ownedCards, Squad squad, int freePacks, int proPacks,
+              List<OwnedCard> ownedCards, Map<Integer, Player> playerCache, Squad squad, int freePacks, int proPacks,
               boolean weeklyPackReady, int weekNumber, DataSource dataSource,
               long pawns, List<MarketListing> listings, List<TradeOffer> offers,
               int adsLeftToday, String username) {
@@ -84,6 +88,7 @@ public class FantasyRepository {
             this.roster = Collections.unmodifiableList(roster);
             this.weekGames = Collections.unmodifiableMap(weekGames);
             this.ownedCards = Collections.unmodifiableList(ownedCards);
+            this.playerCache = Collections.unmodifiableMap(playerCache);
             this.squad = squad;
             this.freePacks = freePacks;
             this.proPacks = proPacks;
@@ -99,7 +104,7 @@ public class FantasyRepository {
 
         static State initial() {
             return new State(true, new ArrayList<>(), new HashMap<>(), new ArrayList<>(),
-                    new Squad(), 0, 0, false, GameWeek.weekNumber(),
+                    new HashMap<>(), new Squad(), 0, 0, false, GameWeek.weekNumber(),
                     DataSource.BUNDLED_SAMPLE, 0, new ArrayList<>(), new ArrayList<>(),
                     PackGenerator.MAX_ADS_PER_DAY, "");
         }
@@ -108,7 +113,7 @@ public class FantasyRepository {
             for (Player p : roster) {
                 if (p.id == id) return p;
             }
-            return null;
+            return playerCache.get(id);
         }
 
         public OwnedCard cardById(String cardId) {
@@ -147,7 +152,7 @@ public class FantasyRepository {
         public List<OwnedCard> tradableCards() {
             List<OwnedCard> tradable = new ArrayList<>();
             for (OwnedCard card : ownedCards) {
-                if (card.rarity.isTradable()) tradable.add(card);
+                if (card.rarity != null && card.rarity.isTradable()) tradable.add(card);
             }
             return tradable;
         }
@@ -217,6 +222,19 @@ public class FantasyRepository {
                 && profile.passwordHash.equals(sha256(password));
     }
 
+    public void logout() {
+        store.saveProfile(null);
+        publish(State.initial());
+    }
+
+    public void buyPawns(long amount) {
+        safeExecute(() -> {
+            publish(copy(current).pawns(current.pawns + amount).build());
+            persist();
+            events.postValue(R.string.event_bought); // Reuse "bought" event or add new one
+        });
+    }
+
     private static String sha256(String value) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -246,16 +264,38 @@ public class FantasyRepository {
                 freePacks += PackGenerator.STARTER_PACKS;
                 pawns += STARTING_PAWNS;
                 lastGrantWeek = currentWeek;
+                // Grant Noam Slutzky card (ID 192738)
+                saved.ownedCards.add(new OwnedCard(
+                        UUID.randomUUID().toString(),
+                        192738,
+                        Rarity.PRO,
+                        1,
+                        System.currentTimeMillis()));
             }
             adEpochDay = saved.adEpochDay;
             adCountToday = saved.adCountToday;
+            
+            // Ensure Noam Slutzky card (ID 192738) is granted
+            boolean hasNoam = false;
+            for (OwnedCard c : saved.ownedCards) {
+                if (c.playerId == 192738) {
+                    hasNoam = true;
+                    break;
+                }
+            }
+            if (!hasNoam) {
+                saved.ownedCards.add(new OwnedCard(UUID.randomUUID().toString(), 192738,
+                        Rarity.PRO, 1, System.currentTimeMillis()));
+            }
+
             rolloverAdDay();
             ledger = new MintLedger(saved.mintCounts);
 
             State c = current;
-            publish(new State(true, c.roster, c.weekGames, saved.ownedCards, saved.squad,
+            List<Player> initialRoster = sample.loadRoster();
+            publish(new State(true, initialRoster, c.weekGames, saved.ownedCards, c.playerCache, saved.squad,
                     freePacks, saved.proPacks, lastGrantWeek < currentWeek,
-                    GameWeek.weekNumber(), c.dataSource, pawns, saved.listings,
+                    GameWeek.weekNumber(), DataSource.BUNDLED_SAMPLE, pawns, saved.listings,
                     saved.offers, adsLeft(), loggedInUsername()));
             persist();
             refreshBlocking();
@@ -271,20 +311,34 @@ public class FantasyRepository {
         State before = current;
         publish(before.loading ? before : copy(before).loading(true).build());
 
-        List<Player> live = api.fetchClubPlayers();
+        List<Player> live = api.fetchAllPlayers();
+        if (live == null) live = api.fetchClubPlayers();
+        
         List<Player> roster = live != null ? live : sample.loadRoster();
         roster = new ArrayList<>(roster);
         roster.sort(Comparator.comparingInt((Player p) -> p.nationalRating).reversed());
         DataSource source = live != null ? DataSource.LIVE_API : DataSource.BUNDLED_SAMPLE;
 
+        // Publish roster immediately before fetching games to unblock UI/Packs
+        State mid = current;
+        publish(copy(mid).roster(roster).dataSource(source).build());
+
         DateTimeFormatter fmt = DateTimeFormatter.ISO_LOCAL_DATE;
         String from = GameWeek.weekStart().format(fmt);
-        String to = GameWeek.weekEnd().format(fmt);
+        // Fetch up to 14 days after the current week to show "next games"
+        String to = GameWeek.weekEnd().plusDays(14).format(fmt);
 
         Map<Integer, List<com.fantasychess.israel.data.model.WeekGame>> games = new HashMap<>();
+        
+        // Optimization: Only fetch live games for owned players and the top 50 players.
+        // The rest get sample data (if needed) to avoid thousands of network calls.
+        Set<Integer> priorityIds = new HashSet<>();
+        for (OwnedCard card : mid.ownedCards) priorityIds.add(card.playerId);
+        for (int i = 0; i < Math.min(50, roster.size()); i++) priorityIds.add(roster.get(i).id);
+
         for (Player player : roster) {
             List<com.fantasychess.israel.data.model.WeekGame> playerGames = null;
-            if (live != null) {
+            if (live != null && priorityIds.contains(player.id)) {
                 playerGames = api.fetchPlayerGames(player.id, from, to);
             }
             if (playerGames == null) {
@@ -294,9 +348,80 @@ public class FantasyRepository {
         }
 
         State c = current;
-        publish(copy(c).loading(false).roster(roster).weekGames(games)
-                .dataSource(source).build());
+        publish(copy(c).loading(false).weekGames(games).build());
+        resolveMissingPlayers();
         refreshMarketBlocking();
+    }
+
+    public void claimPlayerCard(int playerId) {
+        safeExecute(() -> {
+            List<OwnedCard> owned = new ArrayList<>(current.ownedCards);
+            boolean alreadyOwned = false;
+            for (OwnedCard c : owned) {
+                if (c.playerId == playerId) {
+                    alreadyOwned = true;
+                    break;
+                }
+            }
+            if (!alreadyOwned) {
+                owned.add(new OwnedCard(UUID.randomUUID().toString(), playerId,
+                        Rarity.COMMON, 1, System.currentTimeMillis()));
+                publish(copy(current).ownedCards(owned).build());
+                persist();
+            }
+        });
+    }
+
+    public void fetchPlayerDetails(int playerId, Consumer<Player> onDone) {
+        safeExecute(() -> {
+            Player p = current.playerById(playerId);
+            if (p == null) p = api.fetchPlayerDetails(playerId);
+            if (p != null) {
+                Map<Integer, Player> next = new HashMap<>(current.playerCache);
+                next.put(p.id, p);
+                publish(copy(current).playerCache(next).build());
+            }
+            final Player result = p;
+            new Handler(Looper.getMainLooper()).post(() -> onDone.accept(result));
+        });
+    }
+
+    public void searchPlayers(String query, Consumer<List<String>> onDone) {
+        safeExecute(() -> {
+            List<String> results = api.searchPlayers(query);
+            new Handler(Looper.getMainLooper()).post(() -> onDone.accept(results));
+        });
+    }
+
+    public void fetchPairings(int playerId, Integer fideId, Consumer<List<com.fantasychess.israel.data.model.WeekGame>> onDone) {
+        safeExecute(() -> {
+            List<com.fantasychess.israel.data.model.WeekGame> games = null;
+            if (fideId != null) {
+                games = api.fetchPairingsFromChessResults(fideId, playerId);
+            }
+            final List<com.fantasychess.israel.data.model.WeekGame> result = games;
+            new Handler(Looper.getMainLooper()).post(() -> onDone.accept(result));
+        });
+    }
+
+    private void resolveMissingPlayers() {
+        safeExecute(() -> {
+            State c = current;
+            Map<Integer, Player> nextCache = new HashMap<>(c.playerCache);
+            boolean changed = false;
+            for (OwnedCard card : c.ownedCards) {
+                if (c.playerById(card.playerId) == null && !nextCache.containsKey(card.playerId)) {
+                    Player p = api.fetchPlayerDetails(card.playerId);
+                    if (p != null) {
+                        nextCache.put(p.id, p);
+                        changed = true;
+                    }
+                }
+            }
+            if (changed) {
+                publish(copy(current).playerCache(nextCache).build());
+            }
+        });
     }
 
     /** Advances the simulated market: auctions, bot buys, fresh listings. */
@@ -393,17 +518,28 @@ public class FantasyRepository {
         });
     }
 
-    /** Buys a Pro pack with Pawns (into inventory). */
-    public void buyProPack() {
+    /** Buys and opens a Pro pack with Pawns. */
+    public void buyProPack(Consumer<List<OwnedCard>> onOpened, Handler mainHandler) {
         safeExecute(() -> {
             State c = current;
             if (c.pawns < PackGenerator.PRO_PACK_PRICE_PAWNS) {
                 events.postValue(R.string.event_not_enough_pawns);
                 return;
             }
+            if (c.roster.isEmpty()) {
+                // Should not happen as we load sample roster at start
+                return;
+            }
+
+            List<OwnedCard> newCards = packGenerator.openPack(
+                    PackGenerator.PackType.PRO, c.roster, ledger, System.currentTimeMillis());
+            List<OwnedCard> owned = new ArrayList<>(c.ownedCards);
+            owned.addAll(newCards);
+
             publish(copy(c).pawns(c.pawns - PackGenerator.PRO_PACK_PRICE_PAWNS)
-                    .proPacks(c.proPacks + 1).build());
+                    .ownedCards(owned).build());
             persist();
+            mainHandler.post(() -> onOpened.accept(newCards));
         });
     }
 
@@ -501,7 +637,7 @@ public class FantasyRepository {
         safeExecute(() -> {
             State c = current;
             OwnedCard card = c.cardById(cardId);
-            if (card == null || !card.rarity.isTradable() || price <= 0) return;
+            if (card == null || card.rarity == null || !card.rarity.isTradable() || price <= 0) return;
 
             List<OwnedCard> owned = new ArrayList<>(c.ownedCards);
             owned.remove(card);
@@ -549,7 +685,7 @@ public class FantasyRepository {
             for (String cardId : offeredCardIds) {
                 OwnedCard card = c.cardById(cardId);
                 Player player = card == null ? null : c.playerById(card.playerId);
-                if (card == null || player == null || !card.rarity.isTradable()) return;
+                if (card == null || player == null || card.rarity == null || !card.rarity.isTradable()) return;
                 offeredValue += CardValuator.value(player, card.rarity);
             }
             Player target = c.playerById(listing.playerId);
@@ -769,6 +905,7 @@ public class FantasyRepository {
         private List<Player> roster;
         private Map<Integer, List<com.fantasychess.israel.data.model.WeekGame>> weekGames;
         private List<OwnedCard> ownedCards;
+        private Map<Integer, Player> playerCache;
         private Squad squad;
         private int freePacks;
         private int proPacks;
@@ -786,6 +923,7 @@ public class FantasyRepository {
             roster = s.roster;
             weekGames = s.weekGames;
             ownedCards = s.ownedCards;
+            playerCache = s.playerCache;
             squad = s.squad;
             freePacks = s.freePacks;
             proPacks = s.proPacks;
@@ -814,10 +952,11 @@ public class FantasyRepository {
         Builder listings(List<MarketListing> v) { listings = v; return this; }
         Builder offers(List<TradeOffer> v) { offers = v; return this; }
         Builder adsLeft(int v) { adsLeft = v; return this; }
+        Builder playerCache(Map<Integer, Player> v) { playerCache = v; return this; }
 
         State build() {
             return new State(loading, new ArrayList<>(roster), new HashMap<>(weekGames),
-                    new ArrayList<>(ownedCards), squad, freePacks, proPacks,
+                    new ArrayList<>(ownedCards), new HashMap<>(playerCache), squad, freePacks, proPacks,
                     weeklyPackReady, weekNumber, dataSource, pawns,
                     new ArrayList<>(listings), new ArrayList<>(offers), adsLeft, username);
         }

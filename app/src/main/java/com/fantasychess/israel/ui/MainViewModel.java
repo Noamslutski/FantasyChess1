@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.fantasychess.israel.FantasyChessApplication;
 import com.fantasychess.israel.data.model.OwnedCard;
+import com.fantasychess.israel.data.model.Player;
 import com.fantasychess.israel.data.repo.FantasyRepository;
 
 import java.util.List;
@@ -68,7 +69,7 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public void buyProPack() {
-        repository.buyProPack();
+        repository.buyProPack(lastOpenedPack::setValue, mainHandler);
     }
 
     public void grantAdReward() {
@@ -79,6 +80,14 @@ public class MainViewModel extends AndroidViewModel {
         repository.claimWeeklyPack();
     }
 
+    public void logout() {
+        repository.logout();
+    }
+
+    public void buyPawns(long amount) {
+        repository.buyPawns(amount);
+    }
+
     // ---- squad ----
 
     public void setSquadSlot(int slot, String cardId) {
@@ -87,6 +96,22 @@ public class MainViewModel extends AndroidViewModel {
 
     public void setCaptain(int slot) {
         repository.setCaptain(slot);
+    }
+
+    public void searchPlayers(String query, java.util.function.Consumer<List<String>> onDone) {
+        repository.searchPlayers(query, onDone);
+    }
+
+    public void fetchPlayerDetails(int playerId, java.util.function.Consumer<com.fantasychess.israel.data.model.Player> onDone) {
+        repository.fetchPlayerDetails(playerId, onDone);
+    }
+
+    public void fetchPairings(int playerId, Integer fideId, java.util.function.Consumer<List<com.fantasychess.israel.data.model.WeekGame>> onDone) {
+        repository.fetchPairings(playerId, fideId, onDone);
+    }
+
+    public void claimPlayerCard(int playerId) {
+        repository.claimPlayerCard(playerId);
     }
 
     // ---- market ----

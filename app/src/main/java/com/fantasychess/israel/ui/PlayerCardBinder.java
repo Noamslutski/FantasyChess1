@@ -66,12 +66,14 @@ public final class PlayerCardBinder {
 
     /** Scarcity-aware serial: "#3/100" for capped tiers, "#3" for commons. */
     public static String serialText(Rarity rarity, int serial) {
+        if (rarity == null) rarity = Rarity.COMMON;
         return rarity.mintLimitPerSeason > 0
                 ? "#" + serial + "/" + rarity.mintLimitPerSeason
                 : "#" + serial;
     }
 
     public static int backgroundFor(Rarity rarity) {
+        if (rarity == null) return R.drawable.bg_card_common;
         switch (rarity) {
             case PRO: return R.drawable.bg_card_pro;
             case RARE: return R.drawable.bg_card_rare;
@@ -82,6 +84,7 @@ public final class PlayerCardBinder {
     }
 
     public static int accentColorFor(Rarity rarity) {
+        if (rarity == null) return R.color.common_accent;
         switch (rarity) {
             case PRO: return R.color.pro_accent;
             case RARE: return R.color.rare_accent;
@@ -92,6 +95,7 @@ public final class PlayerCardBinder {
     }
 
     public static int rarityLabelFor(Rarity rarity) {
+        if (rarity == null) return R.string.rarity_common;
         switch (rarity) {
             case PRO: return R.string.rarity_pro;
             case RARE: return R.string.rarity_rare;

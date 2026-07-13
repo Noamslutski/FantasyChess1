@@ -64,7 +64,7 @@ public class CollectionFragment extends Fragment {
                     Player p = state.playerById(c.playerId);
                     return p == null ? 0 : p.cardRating();
                 })
-                .thenComparingInt((OwnedCard c) -> c.rarity.ordinal())
+                .thenComparingInt((OwnedCard c) -> c.rarity == null ? -1 : c.rarity.ordinal())
                 .reversed());
         adapter.submit(state, sorted);
     }

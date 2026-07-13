@@ -42,6 +42,7 @@ import java.util.List;
 public class PlayerDetailFragment extends Fragment {
 
     private static final String ARG_PLAYER_ID = "player_id";
+    private MainViewModel viewModel;
 
     public static PlayerDetailFragment newInstance(int playerId) {
         PlayerDetailFragment fragment = new PlayerDetailFragment();
@@ -60,8 +61,7 @@ public class PlayerDetailFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        MainViewModel viewModel =
-                new ViewModelProvider(requireActivity()).get(MainViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
         int playerId = requireArguments().getInt(ARG_PLAYER_ID);
 
         view.findViewById(R.id.detail_back).setOnClickListener(v ->
@@ -73,12 +73,23 @@ public class PlayerDetailFragment extends Fragment {
 
     private void bind(View view, FantasyRepository.State state, int playerId) {
         Player player = state.playerById(playerId);
-        if (player == null) return;
+        if (player == null) {
+            viewModel.fetchPlayerDetails(playerId, p -> {
+                // The state observer will trigger again once the repository is updated.
+            });
+            return;
+        }
 
         OwnedCard best = null;
         for (OwnedCard card : state.ownedCards) {
             if (card.playerId != playerId) continue;
-            if (best == null || card.rarity.ordinal() > best.rarity.ordinal()) best = card;
+            if (best == null) {
+                best = card;
+            } else {
+                int currentOrdinal = card.rarity == null ? -1 : card.rarity.ordinal();
+                int bestOrdinal = best.rarity == null ? -1 : best.rarity.ordinal();
+                if (currentOrdinal > bestOrdinal) best = card;
+            }
         }
         List<WeekGame> games = state.gamesFor(playerId);
 
@@ -94,6 +105,12 @@ public class PlayerDetailFragment extends Fragment {
 
         view.findViewById(R.id.detail_not_owned).setVisibility(
                 best == null ? View.VISIBLE : View.GONE);
+        View claimBtn = view.findViewById(R.id.detail_btn_claim);
+        claimBtn.setVisibility(best == null ? View.VISIBLE : View.GONE);
+        claimBtn.setOnClickListener(v -> {
+            viewModel.claimPlayerCard(player.id);
+            claimBtn.setVisibility(View.GONE);
+        });
 
         ((TextView) view.findViewById(R.id.stat_national))
                 .setText(String.valueOf(player.nationalRating));
@@ -106,6 +123,33 @@ public class PlayerDetailFragment extends Fragment {
         bindFixtures(view, player);
         bindFederationLink(view, player);
         bindGames(view, player, games);
+
+        if (player.fideId != null) {
+            viewModel.fetchPairings(player.id, player.fideId, pairings -> {
+                if (pairings != null && !pairings.isEmpty()) {
+                    addLivePairings(view, player, pairings);
+                }
+            });
+        }
+    }
+
+    private void addLivePairings(View view, Player player, List<WeekGame> pairings) {
+        LinearLayout container = view.findViewById(R.id.detail_games_container);
+        TextView title = new TextView(requireContext());
+        title.setText("Live Pairings (Chess-Results)");
+        title.setTextColor(ContextCompat.getColor(requireContext(), R.color.gold));
+        title.setTextSize(14);
+        title.setPadding(0, 48, 0, 16);
+        container.addView(title);
+
+        for (WeekGame game : pairings) {
+            View row = getLayoutInflater().inflate(R.layout.item_game_row, container, false);
+            ((TextView) row.findViewById(R.id.game_opponent)).setText(game.opponentName);
+            ((TextView) row.findViewById(R.id.game_meta)).setText(game.dateIso + " · " + game.competition);
+            ((TextView) row.findViewById(R.id.game_result)).setText("Upcoming");
+            ((TextView) row.findViewById(R.id.game_points)).setText("—");
+            container.addView(row);
+        }
     }
 
     private void bindTeam(View view, Player player) {
@@ -184,15 +228,22 @@ public class PlayerDetailFragment extends Fragment {
             } else if (game.result == GameResult.DRAW) {
                 resultText = R.string.result_draw;
                 resultColor = R.color.draw_gray;
-            } else {
+            } else if (game.result == GameResult.LOSS) {
                 resultText = R.string.result_loss;
                 resultColor = R.color.loss_red;
+            } else {
+                resultText = R.string.result_upcoming;
+                resultColor = R.color.card_text_dim;
             }
             result.setText(resultText);
             result.setTextColor(ContextCompat.getColor(requireContext(), resultColor));
 
-            ((TextView) row.findViewById(R.id.game_points)).setText(
-                    "+" + FantasyScoring.gamePoints(player.nationalRating, game));
+            TextView pointsView = row.findViewById(R.id.game_points);
+            if (game.result == GameResult.UPCOMING) {
+                pointsView.setText("—");
+            } else {
+                pointsView.setText("+" + FantasyScoring.gamePoints(player.nationalRating, game));
+            }
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);

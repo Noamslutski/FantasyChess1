@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "846395675180",
+    "firebase_url": "https://chessisraelfantasy-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "chessisraelfantasy",
+    "storage_bucket": "chessisraelfantasy.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:846395675180:android:22506ed9972669825ef789",
+        "android_client_info": {
+          "package_name": "com.fantasychess.israel"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLyvBH_Iwt2xtHCPGzlpObSZCyD1FWZgI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

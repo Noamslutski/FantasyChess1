@@ -18,7 +18,7 @@ import java.util.List;
 public class FantasyScoringTest {
 
     private static final Player PLAYER =
-            new Player(1, "טל לוי", Gender.BOY, 2000, null, null, "הפועל פתח תקווה");
+            new Player(1, "טל לוי", Gender.BOY, 2000, null, null, null, "הפועל פתח תקווה", null, null);
 
     private static WeekGame game(GameResult result, int opponentRating) {
         return new WeekGame(1, "2026-06-29", "יריב", "מועדון", opponentRating,

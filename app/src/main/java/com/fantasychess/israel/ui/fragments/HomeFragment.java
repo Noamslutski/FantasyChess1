@@ -63,8 +63,75 @@ public class HomeFragment extends Fragment {
         view.findViewById(R.id.home_btn_packs).setOnClickListener(v ->
                 ((MainActivity) requireActivity()).switchToTab(R.id.nav_packs));
         view.findViewById(R.id.home_data_source).setOnClickListener(v -> viewModel.refresh());
+        view.findViewById(R.id.home_search).setOnClickListener(v -> showSearchDialog());
+        view.findViewById(R.id.home_logout).setOnClickListener(v -> logout());
+        view.findViewById(R.id.home_pawns_container).setOnClickListener(v -> showBuyPawnsDialog());
 
         viewModel.getState().observe(getViewLifecycleOwner(), state -> bind(view, state));
+    }
+
+    private void logout() {
+        viewModel.logout();
+        requireActivity().finish();
+        startActivity(new android.content.Intent(requireContext(), com.fantasychess.israel.LoginActivity.class)
+                .putExtra(com.fantasychess.israel.LoginActivity.EXTRA_AUTO_SKIP, false));
+    }
+
+    private void showBuyPawnsDialog() {
+        String[] options = {"1,000 🨅", "5,000 🨅", "10,000 🨅"};
+        long[] amounts = {1000, 5000, 10000};
+        
+        new android.app.AlertDialog.Builder(requireContext())
+                .setTitle(R.string.buy_pawns_dialog_title)
+                .setItems(options, (dialog, which) -> {
+                    viewModel.buyPawns(amounts[which]);
+                })
+                .setNegativeButton(R.string.common_back, null)
+                .show();
+    }
+
+    private void showSearchDialog() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(requireContext());
+        View view = getLayoutInflater().inflate(R.layout.dialog_search, null);
+        builder.setView(view);
+
+        android.widget.EditText input = view.findViewById(R.id.search_input);
+        android.widget.ListView list = view.findViewById(R.id.search_results);
+        android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(
+                requireContext(), android.R.layout.simple_list_item_1, new ArrayList<>());
+        list.setAdapter(adapter);
+
+        input.addTextChangedListener(new android.text.TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void afterTextChanged(android.text.Editable s) {
+                if (s.length() >= 2) {
+                    viewModel.searchPlayers(s.toString(), results -> {
+                        adapter.clear();
+                        if (results != null) adapter.addAll(results);
+                    });
+                }
+            }
+        });
+
+        android.app.AlertDialog dialog = builder.create();
+        list.setOnItemClickListener((parent, v, position, id) -> {
+            String item = adapter.getItem(position);
+            if (item != null) {
+                // Format is usually "Name [ID]"
+                int start = item.lastIndexOf('[');
+                int end = item.lastIndexOf(']');
+                if (start != -1 && end > start) {
+                    try {
+                        int playerId = Integer.parseInt(item.substring(start + 1, end));
+                        ((MainActivity) requireActivity()).showPlayerDetail(playerId);
+                        dialog.dismiss();
+                    } catch (NumberFormatException ignored) {}
+                }
+            }
+        });
+
+        dialog.show();
     }
 
     private void bind(View view, FantasyRepository.State state) {

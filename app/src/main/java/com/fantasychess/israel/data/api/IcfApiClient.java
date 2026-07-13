@@ -7,6 +7,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,16 +43,112 @@ public class IcfApiClient {
 
     /** Roster of the configured club, or null when live data is unavailable. */
     public List<Player> fetchClubPlayers() {
-        List<Player> players = fetchClubPlayersJson();
-        if (players == null) players = fetchClubPlayersHtml();
-        return (players == null || players.isEmpty()) ? null : players;
+        List<Player> json = fetchClubPlayersJson();
+        return json != null ? json : fetchClubPlayersHtml();
+    }
+
+    /** Roster of all players in Israel (top players from the rankings page). */
+    public List<Player> fetchAllPlayers() {
+        String html = get(IcfApiConfig.allPlayersUrl());
+        if (html == null) return null;
+        try {
+            List<Player> players = IcfHtmlParser.parseClubRoster(html);
+            return players.isEmpty() ? null : players;
+        } catch (RuntimeException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Searches for any player by name prefix. Uses the federation's autocomplete API.
+     * Returns list of "Player Name [ID]".
+     */
+    public List<String> searchPlayers(String query) {
+        String url = IcfApiConfig.BASE_URL + "/WebService.asmx/GetCompletionList";
+        String json = "{\"prefixText\":\"" + query + "\", \"count\":20}";
+        
+        okhttp3.RequestBody body = okhttp3.RequestBody.create(
+                json, okhttp3.MediaType.get("application/json; charset=utf-8"));
+        
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .header("User-Agent", IcfApiConfig.USER_AGENT)
+                .build();
+                
+        try (Response response = http.newCall(request).execute()) {
+            if (!response.isSuccessful()) return null;
+            String respBody = response.body() != null ? response.body().string() : "";
+            JsonObject root = JsonParser.parseString(respBody).getAsJsonObject();
+            JsonArray d = root.getAsJsonArray("d");
+            List<String> results = new ArrayList<>();
+            if (d != null) {
+                for (JsonElement el : d) results.add(el.getAsString());
+            }
+            return results;
+        } catch (IOException | RuntimeException e) {
+            return null;
+        }
+    }
+
+    /** Details of a specific player, or null when unavailable. */
+    public Player fetchPlayerDetails(int playerId) {
+        String html = get(IcfApiConfig.playerCardUrl(playerId));
+        if (html == null) return null;
+        try {
+            return IcfHtmlParser.parsePlayerDetails(html, playerId);
+        } catch (RuntimeException e) {
+            return null;
+        }
     }
 
     /** Games in the given date window, or null when unavailable. */
     public List<WeekGame> fetchPlayerGames(int playerId, String fromIsoDate, String toIsoDate) {
         List<WeekGame> games = fetchPlayerGamesJson(playerId, fromIsoDate, toIsoDate);
-        if (games == null) games = fetchPlayerGamesHtml(playerId, fromIsoDate, toIsoDate);
-        return games;
+        if (games == null) games = fetchPlayerGamesHtml(playerId);
+        
+        if (games == null) return null;
+        
+        // Filter by date window if provided
+        if (fromIsoDate == null && toIsoDate == null) return games;
+        
+        List<WeekGame> filtered = new ArrayList<>();
+        for (WeekGame g : games) {
+            if (fromIsoDate != null && g.dateIso.compareTo(fromIsoDate) < 0) continue;
+            if (toIsoDate != null && g.dateIso.compareTo(toIsoDate) > 0) continue;
+            filtered.add(g);
+        }
+        return filtered;
+    }
+
+    /** Fetches pairings from chess-results.com for a given FIDE ID. */
+    public List<WeekGame> fetchPairingsFromChessResults(int fideId, int playerId) {
+        String url = "https://chess-results.com/fide.aspx?id=" + fideId + "&lan=1";
+        String html = get(url);
+        if (html == null) return null;
+        try {
+            // Very simple parser for chess-results: find rows that look like pairings
+            Document doc = org.jsoup.Jsoup.parse(html);
+            List<WeekGame> games = new ArrayList<>();
+            for (org.jsoup.nodes.Element row : doc.select("table.CRtable tr")) {
+                org.jsoup.select.Elements tds = row.select("td");
+                if (tds.size() >= 5) {
+                    String tournament = tds.get(1).text();
+                    String result = tds.get(tds.size() - 2).text();
+                    if (result.contains("+") || result.contains("-") || result.contains("=")) {
+                        // Likely a tournament summary or recent game
+                        String date = IcfHtmlParser.parseIsoDate(tds.get(0).text());
+                        if (date != null) {
+                            games.add(new WeekGame(playerId, date, tournament, "", 0,
+                                    true, IcfHtmlParser.parseResult(result), "Chess-Results"));
+                        }
+                    }
+                }
+            }
+            return games;
+        } catch (RuntimeException e) {
+            return null;
+        }
     }
 
     // ---- JSON attempts -----------------------------------------------------
@@ -69,6 +170,7 @@ public class IcfApiClient {
                         IcfHtmlParser.guessGender(firstString(obj, "gender", "sex")),
                         rating,
                         firstInt(obj, "fide_rating", "fide"),
+                         null,
                         firstString(obj, "title"),
                         IcfApiConfig.CLUB_NAME,
                         firstString(obj, "team", "squad"),
@@ -93,13 +195,15 @@ public class IcfApiClient {
                 String opponent = firstString(obj, "opponent", "opponent_name");
                 Integer opponentRating = firstInt(obj, "opponent_rating");
                 String result = firstString(obj, "result");
-                if (date == null || opponent == null || opponentRating == null || result == null) {
+                if (date == null || opponent == null || opponentRating == null) {
                     continue;
                 }
                 if (date.compareTo(fromIsoDate) < 0 || date.compareTo(toIsoDate) > 0) continue;
+                
                 com.fantasychess.israel.data.model.GameResult parsed =
-                        IcfHtmlParser.parseResult(result);
-                if (parsed == null) continue;
+                        result != null ? IcfHtmlParser.parseResult(result) : com.fantasychess.israel.data.model.GameResult.UPCOMING;
+                
+                if (parsed == null) parsed = com.fantasychess.israel.data.model.GameResult.UPCOMING;
                 String color = firstString(obj, "color");
                 games.add(new WeekGame(playerId, date, opponent,
                         firstString(obj, "opponent_club"),
@@ -127,11 +231,11 @@ public class IcfApiClient {
         }
     }
 
-    private List<WeekGame> fetchPlayerGamesHtml(int playerId, String fromIsoDate, String toIsoDate) {
+    private List<WeekGame> fetchPlayerGamesHtml(int playerId) {
         String html = get(IcfApiConfig.playerCardUrl(playerId));
         if (html == null) return null;
         try {
-            return IcfHtmlParser.parsePlayerGames(html, playerId, fromIsoDate, toIsoDate);
+            return IcfHtmlParser.parsePlayerGames(html, playerId);
         } catch (RuntimeException e) {
             return null;
         }

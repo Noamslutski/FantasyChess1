@@ -99,7 +99,9 @@ public class MarketFragment extends Fragment {
         sorted.sort((a, b) -> {
             if (a.mine != b.mine) return a.mine ? -1 : 1;         // my listings first
             if (a.rarity != b.rarity) {
-                return b.rarity.ordinal() - a.rarity.ordinal();   // rarest first
+                int oa = a.rarity == null ? -1 : a.rarity.ordinal();
+                int ob = b.rarity == null ? -1 : b.rarity.ordinal();
+                return ob - oa;   // rarest first
             }
             return Long.compare(b.createdAtEpochMs, a.createdAtEpochMs);
         });

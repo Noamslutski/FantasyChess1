@@ -148,6 +148,7 @@
     <string name="result_win">ניצחון</string>
     <string name="result_draw">תיקו</string>
     <string name="result_loss">הפסד</string>
+    <string name="result_upcoming">טרם שוחק</string>
 
     <!-- Card -->
     <string name="card_national_rating">מדד %1$d</string>
@@ -161,4 +162,9 @@
 
     <string name="common_done">אישור</string>
     <string name="common_back">חזרה</string>
+
+    <string name="logout">התנתק</string>
+    <string name="buy_pawns">קנה 🨅</string>
+    <string name="buy_pawns_dialog_title">קנה פיונים</string>
+    <string name="buy_pawns_amount">בחר כמות לרכישה:</string>
 </resources>

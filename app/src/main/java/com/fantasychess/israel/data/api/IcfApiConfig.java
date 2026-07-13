@@ -16,8 +16,8 @@ package com.fantasychess.israel.data.api;
  */
 public final class IcfApiConfig {
 
-    /** New federation site. */
-    public static final String BASE_URL = "https://chess.org.il";
+    /** Classic site that hosts everything. */
+    public static final String BASE_URL = "https://www.chess.org.il";
 
     /** Classic site that hosts the per-player card pages (כרטיס שחקן). */
     public static final String LEGACY_BASE_URL = "https://www.chess.org.il";
@@ -26,10 +26,7 @@ public final class IcfApiConfig {
     public static final String CLUB_NAME = "הפועל פתח תקווה";
 
     /**
-     * Real club id of מועדון השחמט הפועל פתח תקוה on the federation site —
-     * verified against https://www.chess.org.il/clubs/Club.aspx?Id=30
-     * (the club at מייזנר 11, פתח תקווה, opened 27/10/2013). A second entry
-     * exists at Id=2417; switch if the roster turns out to live there.
+     * Real club id of מועדון השחמט הפועל פתח תקוה on the federation site.
      */
     public static final int CLUB_ID = 30;
 
@@ -41,27 +38,28 @@ public final class IcfApiConfig {
     private IcfApiConfig() {
     }
 
-    /** Candidate JSON endpoint for a club's player list. */
+    /** No public JSON endpoint for club players; always use HTML. */
     public static String clubPlayersUrl() {
-        return BASE_URL + "/api/players?club_id=" + CLUB_ID;
+        return clubPageUrl();
     }
 
-    /** Candidate JSON endpoint for a player's recent games. */
+    /** No public JSON endpoint for player games; always use HTML. */
     public static String playerGamesUrl(int playerId) {
-        return BASE_URL + "/api/player/" + playerId + "/games";
+        return playerCardUrl(playerId);
     }
 
-    /** Classic HTML player card (כרטיס שחקן) — scraped as a fallback. */
+    /** Classic HTML player card (כרטיס שחקן) — contains games and tournaments. */
     public static String playerCardUrl(int playerId) {
-        return LEGACY_BASE_URL + "/players/Player.aspx?Id=" + playerId;
+        return BASE_URL + "/players/Player.aspx?Id=" + playerId;
     }
 
-    /**
-     * Classic HTML club page — scraped as a fallback for the roster.
-     * URL pattern verified: /clubs/Club.aspx?Id={id} (player search lives at
-     * /players/searchplayers.aspx on the same site).
-     */
+    /** Classic HTML club page. */
     public static String clubPageUrl() {
-        return LEGACY_BASE_URL + "/clubs/Club.aspx?Id=" + CLUB_ID;
+        return BASE_URL + "/clubs/Club.aspx?Id=" + CLUB_ID;
+    }
+
+    /** Players list sorted by rating. */
+    public static String allPlayersUrl() {
+        return BASE_URL + "/Players/PlayersList.aspx?Ranking=0&Sort=4";
     }
 }
